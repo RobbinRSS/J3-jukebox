@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "root",
+    "password": "",
+    "database": "jukebox",
+    "host": "localhost",
+    "dialect": "mysql"
+  }
+}
