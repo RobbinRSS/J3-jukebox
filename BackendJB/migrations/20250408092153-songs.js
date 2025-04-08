@@ -19,7 +19,7 @@ module.exports = {
         allowNull: false,
       },
       genre: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
       },
     });

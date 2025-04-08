@@ -1,30 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 function MainContent() {
+  // data is de waarde, setData gebruik je als functie om de data aan te passen
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:8081/songs")
+      .then((res) => res.json())
+      .then((data) => setData(data))
+      .catch((err) => console.log(err));
+  });
   return (
     <>
       {/* NOTE main gaat de design importeren van alle songs of als gebruiker op playlist klikt dan playlist */}
       <main>
         <h2>Songs</h2>
-        {/* NOTE Database naam / playlist naam  */}
         <section id="all-songs">
-          <div id="song">
-            Songname1 <span id="duration-song">1:10</span>
-            <button id="add-to-playlist">+</button>
-          </div>
-          <div id="song">
-            Songname2 <span id="duration-song">1:14</span>
-            <button id="add-to-playlist">+</button>
-          </div>
-          <div id="song">
-            Songname3 <span id="duration-song">2:45</span>
-            <button id="add-to-playlist">+</button>
-          </div>
-          <div id="song">
-            Songname4 <span id="duration-song">1:56</span>
-            <button id="add-to-playlist">+</button>
-          </div>
+          {/* NOTE function dat meteen word uitgevoerd, om het te renderen */}
+          {(() => {
+            if (data.length > 0) {
+              return data.map((song) => (
+                // Key maakt het makkelijker voor react als er iets word aangepast om het sneller te renderen
+                <div key={song.id} id="song">
+                  {song.song_title}{" "}
+                  <span id="duration-song">{song.song_duration}</span>
+                  <button id="add-to-playlist">+</button>
+                </div>
+              ));
+            } else {
+              return <p>No songs available</p>;
+            }
+          })()}
         </section>
       </main>
 
