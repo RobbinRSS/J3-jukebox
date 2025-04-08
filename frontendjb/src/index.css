@@ -14,6 +14,10 @@ footer,
   text-align: left;
 }
 
+button:hover {
+  cursor: pointer;
+}
+
 header {
   display: flex;
   justify-content: space-between;
@@ -22,7 +26,7 @@ header {
 }
 
 #header-btns button {
-  gap: 10px;
+  margin: 3px;
   padding: 10px;
 }
 
