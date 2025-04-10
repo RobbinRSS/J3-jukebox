@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-export function PopupContent() {
+export function PopupContent({ setUsernameFromLogin }) {
   const [data, setData] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +22,7 @@ export function PopupContent() {
 
     if (userFound) {
       console.log("Logged in successfully!");
-      console.log(username);
+      setUsernameFromLogin(username);
     } else {
       console.log("nuh uh");
     }
@@ -58,22 +58,38 @@ export function PopupContent() {
 
 function Header() {
   const [showModal, setShowModal] = useState(false);
+  const [username, setUsername] = useState("");
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
+
+  const setUsernameFromLogin = (name) => {
+    setUsername(name);
+    closeModal();
+  };
   return (
     <>
       <header>
         <h1>Jukebox</h1>
-        <div id="header-btns">
-          <button onClick={openModal}>Sign Up</button>
-          <button onClick={openModal}>Sign In</button>
-        </div>
-        {/* <p><b>Robbin Schrijver</b></p> NOTE if user is signed in display user name  */}
+        {(!username && (
+          <>
+            <div id="header-btns">
+              <button onClick={openModal}>Sign Up</button>
+              <button onClick={openModal}>Sign In</button>
+            </div>
+          </>
+        )) || (
+          <>
+            {" "}
+            <p>
+              <b>{username}</b>
+            </p>{" "}
+          </>
+        )}
       </header>
       {showModal && (
         <>
           <div className="overlay" onClick={closeModal}></div>
-          <PopupContent />
+          <PopupContent setUsernameFromLogin={setUsernameFromLogin} />
         </>
       )}
     </>
