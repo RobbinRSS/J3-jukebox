@@ -19,15 +19,26 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
 
     const userNameFound = data.find((user) => user.name === username);
 
-    const userFound = data.find(
-      (user) => user.name === username && user.password === password
-    );
-
     if (userNameFound && loginType === "signUp") {
       setErrorMessage("Username already exists");
-    } else if (userFound && loginType === "signIn") {
-      setUsernameFromLogin(username);
-    } else if (!userFound && loginType === "signIn") {
+    } else if (loginType === "signIn") {
+      fetch("http://localhost:8081/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.message === "User logged in successfully") {
+            setUsernameFromLogin(username);
+          } else {
+            setErrorMessage(data.message);
+          }
+        })
+        .catch((err) => console.log(err));
+    } else if (!userNameFound && loginType === "signIn") {
       setErrorMessage("User is not found");
     } else if (!userNameFound && loginType === "signUp") {
       fetch("http://localhost:8081/signup", {

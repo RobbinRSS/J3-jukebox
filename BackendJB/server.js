@@ -29,6 +29,28 @@ app.get("/users", (req, res) => {
   });
 });
 
+app.post("/signin", (req, res) => {
+  const { username, password } = req.body;
+
+  const sql = "SELECT * FROM users WHERE name = ?";
+  db.query(sql, [username], (err, data) => {
+    if (err) return res.json(err);
+    if (data.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const user = data[0];
+    bcrypt.compare(password, user.password, (err, result) => {
+      if (err) return res.json(err);
+      if (!result) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      return res.status(200).json({ message: "User logged in successfully" });
+    });
+  });
+});
+
 app.post("/signup", (req, res) => {
   const { username, password } = req.body;
 
