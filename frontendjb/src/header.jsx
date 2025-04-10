@@ -30,8 +30,18 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
     } else if (!userFound && loginType === "signIn") {
       setErrorMessage("User is not found");
     } else if (!userNameFound && loginType === "signUp") {
-      console.log("Account succesfully created");
-      // TODO logica om aan de sql database toe te voegen
+      fetch("http://localhost:8081/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setUsernameFromLogin(username);
+        })
+        .catch((err) => console.log(err));
     }
   };
 
@@ -53,6 +63,7 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            minLength={6}
             required
           />
           <br />

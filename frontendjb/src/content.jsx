@@ -9,7 +9,7 @@ function MainContent() {
       .then((res) => res.json())
       .then((data) => setData(data))
       .catch((err) => console.log(err));
-  });
+  }, []);
   return (
     <>
       {/* NOTE main gaat de design importeren van alle songs of als gebruiker op playlist klikt dan playlist */}

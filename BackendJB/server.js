@@ -2,10 +2,12 @@
 
 const express = require("express");
 const mysql = require("mysql");
+const bcrypt = require("bcryptjs");
 const cors = require("cors");
 
 const app = express();
 app.use(cors());
+app.use(express.json()); // Zorg ervoor dat de body goed wordt geparsed
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -24,6 +26,30 @@ app.get("/users", (req, res) => {
   db.query(sql, (err, data) => {
     if (err) return res.json(err);
     return res.json(data);
+  });
+});
+
+app.post("/signup", (req, res) => {
+  const { username, password } = req.body;
+
+  // Hash the password before saving it
+  bcrypt.hash(password, 10, (err, hashedPassword) => {
+    if (err) return res.json(err);
+
+    // Insert the new user into the database
+    const insertSql =
+      "INSERT INTO users (name, password, createdAt) VALUES (?, ?, ?)";
+    const createdAt = new Date();
+    db.query(
+      insertSql,
+      [username, hashedPassword, createdAt],
+      (err, result) => {
+        if (err) return res.json(err);
+        return res
+          .status(201)
+          .json({ message: "Account successfully created" });
+      }
+    );
   });
 });
 
