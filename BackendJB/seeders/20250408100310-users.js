@@ -8,14 +8,17 @@ module.exports = {
       [
         {
           name: "John Doe",
+          password: "password1",
           createdAt: new Date(),
         },
         {
           name: "Robbin Schrijver",
+          password: "password2",
           createdAt: new Date(),
         },
         {
           name: "Richard Karpivikovskiskividaski",
+          password: "password3",
           createdAt: new Date(),
         },
       ],
