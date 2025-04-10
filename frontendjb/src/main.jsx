@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import Header from "./header.jsx";
+import Header, { PopupContent } from "./header.jsx";
 import MainContent from "./content.jsx";
 import Footer from "./footer.jsx";
 

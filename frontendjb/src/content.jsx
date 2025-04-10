@@ -23,7 +23,9 @@ function MainContent() {
                 // Key maakt het makkelijker voor react als er iets word aangepast om het sneller te renderen
                 <div key={song.id} id="song">
                   {song.song_title}{" "}
-                  <span id="duration-song">{song.song_duration}</span>
+                  <span id="duration-song">
+                    {(song.song_duration / 60).toFixed(2)} min
+                  </span>
                   <button id="add-to-playlist">+</button>
                 </div>
               ));
@@ -45,18 +47,6 @@ function MainContent() {
         <a href="#">playlist[.name]</a>
         <a href="#">playlist[.name]</a>
       </section>
-
-      <div class="modal hidden">
-        <h3>Sign Up / Sign In</h3>
-        <form>
-          <input type="text" placeholder="Username" required />
-          <br />
-          <input type="password" placeholder="Password" required />
-          <br />
-          <button type="submit">Submit</button>
-        </form>
-      </div>
-      <div class="overlay hidden"></div>
     </>
   );
 }
