@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "./AuthContext.jsx";
+
 import "./index.css";
 
 export function PopupContent({ setUsernameFromLogin, loginType }) {
@@ -6,6 +8,8 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const { setIsLoggedIn } = useContext(AuthContext);
 
   useEffect(() => {
     fetch("http://localhost:8081/users")
@@ -33,6 +37,7 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
         .then((data) => {
           if (data.message === "User logged in successfully") {
             setUsernameFromLogin(username);
+            setIsLoggedIn(true);
           } else {
             setErrorMessage(data.message);
           }
@@ -51,6 +56,7 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
         .then((res) => res.json())
         .then((data) => {
           setUsernameFromLogin(username);
+          setIsLoggedIn(true);
         })
         .catch((err) => console.log(err));
     }

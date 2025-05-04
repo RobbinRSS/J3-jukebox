@@ -54,7 +54,7 @@ app.post("/signin", (req, res) => {
 app.post("/signup", (req, res) => {
   const { username, password } = req.body;
 
-  // Hash the password before saving it
+  // Hash the password
   bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) return res.json(err);
 

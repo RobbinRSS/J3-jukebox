@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "./AuthContext.jsx";
 import "./App.css";
 
 function MainContent() {
   // data is de waarde, setData gebruik je als functie om de data aan te passen
   const [data, setData] = useState([]);
+  const { isLoggedIn } = useContext(AuthContext);
+
   useEffect(() => {
     fetch("http://localhost:8081/songs")
       .then((res) => res.json())
@@ -39,13 +42,22 @@ function MainContent() {
       {/* NOTE alle href krijgen url parameters  */}
       <section id="all-playlists">
         <h2>Playlists</h2>
-        <a href="#">Temporary playlist</a>
-        <a href="#">playlist[.name]</a>
-        <a href="#">playlist[.name]</a>
-        <a href="#">playlist[.name]</a>
-        <a href="#">playlist[.name]</a>
-        <a href="#">playlist[.name]</a>
-        <a href="#">playlist[.name]</a>
+        {isLoggedIn ? (
+          <>
+            <a href="#">Temporary playlist</a>
+            <a href="#">playlist[.name]</a>
+            <a href="#">playlist[.name]</a>
+            <a href="#">playlist[.name]</a>
+            <a href="#">playlist[.name]</a>
+            <a href="#">playlist[.name]</a>
+            <a href="#">playlist[.name]</a>
+          </>
+        ) : (
+          <p>
+            Warning: User is not logged in, you can only create a temporary
+            playlist
+          </p>
+        )}
       </section>
     </>
   );
