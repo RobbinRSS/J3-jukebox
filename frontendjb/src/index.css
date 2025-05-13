@@ -1,6 +1,7 @@
 body {
   font-family: "Poppins", sans-serif;
   background: linear-gradient(to bottom, rgb(5, 125, 51), #000000);
+  color: white;
 }
 
 header,
@@ -15,11 +16,6 @@ footer,
   text-align: left;
 }
 
-#all-playlists,
-footer {
-  color: white;
-}
-
 button:hover {
   cursor: pointer;
   scale: 1.1;
@@ -32,7 +28,7 @@ header {
   padding: 10px;
   border: 2px solid black;
   border-radius: 30px;
-  background: linear-gradient(to bottom, #319962, #2cc968);
+  background: linear-gradient(to bottom, #319962, rgb(5, 125, 51));
 }
 
 #header-btns button,
@@ -43,6 +39,7 @@ button[type="submit"] {
   border-radius: 18px;
   background-size: 200% 100%;
   transition: background-position 1s ease;
+  color: white;
 }
 
 #header-btns button:hover,
@@ -58,29 +55,21 @@ button[type="submit"]:hover {
   gap: 20px;
 }
 
-#song {
+#song,
+#all-playlists a {
   display: flex;
   padding: 10px;
   border: 2px solid #ddd;
   border-radius: 18px;
-  background: linear-gradient(to bottom, #319962, #2cc968);
+  background: linear-gradient(to bottom, #319962, rgb(5, 125, 51));
   border-color: black;
-  font-size: 16px; /* Optioneel: iets groter of kleiner naar wens */
-  color: #222; /* Zorg dat de tekst goed leesbaar is */
+  font-size: 16px;
+  text-decoration: none;
+  color: white;
 }
 
 #duration-song {
   margin-left: auto;
-}
-
-#all-playlists a {
-  color: black;
-  text-decoration: none;
-  padding: 10px;
-  border: 1px solid black;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-  margin-bottom: 10px; /* Voeg ruimte toe tussen de links */
 }
 
 .hidden {
@@ -119,10 +108,6 @@ input[type="password"] {
 
 #all-playlists a:hover {
   background-color: #bbb9b9;
-}
-
-button[type="submit"]:hover {
-  background-color: #1568d4;
 }
 
 #add-to-playlist {
