@@ -32,7 +32,8 @@ header {
 }
 
 #header-btns button,
-button[type="submit"] {
+button[type="submit"],
+#header-playlists button {
   margin: 3px;
   padding: 10px;
   background: linear-gradient(to right, #319962, #2cc968);
@@ -42,8 +43,24 @@ button[type="submit"] {
   color: white;
 }
 
+#song,
+#all-playlists a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border: 2px solid #1e1e1e;
+  border-radius: 16px;
+  background: linear-gradient(to right, #2ab676, #1e8a59);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  color: white;
+}
+
 #header-btns button:hover,
-button[type="submit"]:hover {
+button[type="submit"]:hover,
+#header-playlists button:hover {
   background-position: -100% 0;
   scale: 1.1;
 }
@@ -53,19 +70,6 @@ button[type="submit"]:hover {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Maakt twee kolommen */
   gap: 20px;
-}
-
-#song,
-#all-playlists a {
-  display: flex;
-  padding: 10px;
-  border: 2px solid #ddd;
-  border-radius: 18px;
-  background: linear-gradient(to bottom, #319962, rgb(5, 125, 51));
-  border-color: black;
-  font-size: 16px;
-  text-decoration: none;
-  color: white;
 }
 
 #duration-song {
@@ -121,4 +125,65 @@ input[type="password"] {
 .error-message {
   color: red;
   padding-top: 3px;
+}
+
+#header-playlists {
+  display: flex;
+  justify-content: space-between; /* Zorgt voor ruimte tussen h2 en button */
+  align-items: center; /* Centreert verticaal */
+  margin-bottom: 10px; /* Optioneel: wat ruimte onder de header */
+}
+
+@media (max-width: 768px) {
+  header,
+  main,
+  footer,
+  #all-playlists {
+    width: 90%;
+    padding: 10px;
+    text-align: left;
+  }
+
+  #all-songs,
+  #all-playlists a {
+    grid-template-columns: 1fr; /* Één kolom op mobiel */
+  }
+
+  #song,
+  #all-playlists a {
+    flex-direction: column; /* Stack inhoud verticaal */
+    font-size: 14px;
+  }
+
+  #duration-song {
+    margin-left: 0;
+    margin-top: 10px;
+    text-align: right;
+  }
+
+  .modal {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  #header-playlists {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  #header-btns {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #header-btns button,
+  #header-playlists button {
+    width: 100%;
+  }
+
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+  }
 }

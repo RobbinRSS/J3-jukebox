@@ -7,12 +7,30 @@ function MainContent() {
   const [data, setData] = useState([]);
   const { isLoggedIn } = useContext(AuthContext);
 
+  const [temporaryPlaylist, setTemporaryPlaylist] = useState(() => {
+    const stored = sessionStorage.getItem("tempPlaylist");
+    return stored ? JSON.parse(stored) : null;
+  });
+
+  function createPlaylist() {
+    if (!isLoggedIn) {
+      const newTempPlaylist = {
+        name: "Temporary playlist",
+        songs: [],
+      };
+      setTemporaryPlaylist(newTempPlaylist); // async (beschikbaar bij de volgende render)
+      sessionStorage.setItem("tempPlaylist", JSON.stringify(newTempPlaylist)); // direct toegevoegd, dus de waarde van temporaryPlaylist word niet null
+      // console.log("Tijdelijke playlist aangemaakt");
+    }
+  }
+
   useEffect(() => {
     fetch("http://localhost:8081/songs")
       .then((res) => res.json())
       .then((data) => setData(data))
       .catch((err) => console.log(err));
   }, []);
+
   return (
     <>
       {/* NOTE main gaat de design importeren van alle songs of als gebruiker op playlist klikt dan playlist */}
@@ -41,7 +59,10 @@ function MainContent() {
 
       {/* NOTE alle href krijgen url parameters  */}
       <section id="all-playlists">
-        <h2>Playlists</h2>
+        <div id="header-playlists">
+          <h2>Playlists</h2>
+          <button onClick={createPlaylist}>Playlist aanmaken</button>
+        </div>
         {isLoggedIn ? (
           <>
             <a href="#">Temporary playlist</a>
@@ -53,10 +74,16 @@ function MainContent() {
             <a href="#">playlist[.name]</a>
           </>
         ) : (
-          <p>
-            Warning: User is not logged in, you can only create a temporary
-            playlist
-          </p>
+          <>
+            {temporaryPlaylist ? (
+              <a href="#">{temporaryPlaylist.name}</a>
+            ) : (
+              <p>
+                Warning: User is not logged in, you can only create a temporary
+                playlist
+              </p>
+            )}
+          </>
         )}
       </section>
     </>
