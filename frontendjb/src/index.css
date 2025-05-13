@@ -1,5 +1,6 @@
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(to bottom, rgb(5, 125, 51), #000000);
 }
 
 header,
@@ -14,8 +15,14 @@ footer,
   text-align: left;
 }
 
+#all-playlists,
+footer {
+  color: white;
+}
+
 button:hover {
   cursor: pointer;
+  scale: 1.1;
 }
 
 header {
@@ -23,11 +30,25 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 10px;
+  border: 2px solid black;
+  border-radius: 30px;
+  background: linear-gradient(to bottom, #319962, #2cc968);
 }
 
-#header-btns button {
+#header-btns button,
+button[type="submit"] {
   margin: 3px;
   padding: 10px;
+  background: linear-gradient(to right, #319962, #2cc968);
+  border-radius: 18px;
+  background-size: 200% 100%;
+  transition: background-position 1s ease;
+}
+
+#header-btns button:hover,
+button[type="submit"]:hover {
+  background-position: -100% 0;
+  scale: 1.1;
 }
 
 #all-songs,
@@ -40,9 +61,12 @@ header {
 #song {
   display: flex;
   padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+  border: 2px solid #ddd;
+  border-radius: 18px;
+  background: linear-gradient(to bottom, #319962, #2cc968);
+  border-color: black;
+  font-size: 16px; /* Optioneel: iets groter of kleiner naar wens */
+  color: #222; /* Zorg dat de tekst goed leesbaar is */
 }
 
 #duration-song {
@@ -69,15 +93,14 @@ header {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 30%;
-
-  background-color: white;
+  background: linear-gradient(to right, #1f8a52, #31ea78);
   padding: 2rem;
-  border-radius: 5px;
+  border-radius: 10px;
   z-index: 10;
 }
 
 .overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -94,15 +117,6 @@ input[type="password"] {
   width: 80%;
 }
 
-button[type="submit"] {
-  padding: 10px;
-  background-color: #1b97ea;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
 #all-playlists a:hover {
   background-color: #bbb9b9;
 }
@@ -114,6 +128,9 @@ button[type="submit"]:hover {
 #add-to-playlist {
   padding: 0px 2px, 2px 0px;
   margin-left: 5px;
+  border: none;
+  color: black;
+  background-color: #00000000;
 }
 
 .error-message {
