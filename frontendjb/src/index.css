@@ -134,6 +134,7 @@ input[type="password"] {
   margin-bottom: 10px; /* Optioneel: wat ruimte onder de header */
 }
 
+/* styling for phone */
 @media (max-width: 768px) {
   header,
   main,
@@ -185,5 +186,27 @@ input[type="password"] {
   input[type="text"],
   input[type="password"] {
     width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .modal {
+    width: 90%;
+    padding: 1rem;
+  }
+
+  .modal h2 {
+    font-size: 1.2rem;
+  }
+
+  .modal input {
+    width: 90%;
+    font-size: 0.95rem;
+  }
+
+  .modal button {
+    width: 100%;
+    font-size: 1rem;
+    padding: 10px;
   }
 }
