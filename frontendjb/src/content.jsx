@@ -12,7 +12,7 @@ function MainContent() {
     return stored ? JSON.parse(stored) : null;
   });
 
-  function createPlaylist() {
+  function createTempPlaylist() {
     if (!isLoggedIn) {
       const newTempPlaylist = {
         name: "Temporary playlist",
@@ -22,6 +22,29 @@ function MainContent() {
       sessionStorage.setItem("tempPlaylist", JSON.stringify(newTempPlaylist)); // direct toegevoegd, dus de waarde van temporaryPlaylist word niet null
       // console.log("Tijdelijke playlist aangemaakt");
     }
+  }
+
+  function addSongToTempPlaylist(song) {
+    if (isLoggedIn) return;
+    if (!temporaryPlaylist) alert("Je hebt geen playlist");
+
+    // check voor dubbelen
+    const test = temporaryPlaylist.songs.some((s) => s.id === song.id);
+    if (test) {
+      alert("song is already in playlist");
+      return;
+    }
+
+    // de playlist vervangen met een "nieuwe"
+    const updatedPlaylist = {
+      ...temporaryPlaylist,
+      songs: [...temporaryPlaylist.songs, song],
+    };
+
+    setTemporaryPlaylist(updatedPlaylist);
+    console.log(updatedPlaylist);
+    console.log(temporaryPlaylist);
+    sessionStorage.setItem("tempPlaylist", JSON.stringify(updatedPlaylist));
   }
 
   useEffect(() => {
@@ -47,7 +70,12 @@ function MainContent() {
                   <span id="duration-song">
                     {(song.song_duration / 60).toFixed(2)} min
                   </span>
-                  <button id="add-to-playlist">+</button>
+                  <button
+                    id="add-to-playlist"
+                    onClick={() => addSongToTempPlaylist(song)}
+                  >
+                    +
+                  </button>
                 </div>
               ));
             } else {
@@ -61,7 +89,7 @@ function MainContent() {
       <section id="all-playlists">
         <div id="header-playlists">
           <h2>Playlists</h2>
-          <button onClick={createPlaylist}>Playlist aanmaken</button>
+          <button onClick={createTempPlaylist}>Playlist aanmaken</button>
         </div>
         {isLoggedIn ? (
           <>

@@ -8,6 +8,7 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  // console.log(password);
 
   const { setIsLoggedIn } = useContext(AuthContext);
 

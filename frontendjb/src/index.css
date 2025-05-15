@@ -26,9 +26,6 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  border: 2px solid black;
-  border-radius: 30px;
-  background: linear-gradient(to bottom, #319962, rgb(5, 125, 51));
 }
 
 #header-btns button,
