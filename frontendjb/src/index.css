@@ -1,6 +1,12 @@
+html {
+  min-height: 100%;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   background: linear-gradient(to bottom, rgb(5, 125, 51), #000000);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: white;
 }
 
@@ -41,7 +47,8 @@ button[type="submit"],
 }
 
 #song,
-#all-playlists a {
+#all-playlists a,
+#return-main a {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -53,6 +60,10 @@ button[type="submit"],
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-decoration: none;
   color: white;
+}
+
+#return-main {
+  margin-top: 10px;
 }
 
 #header-btns button:hover,
@@ -107,11 +118,13 @@ input[type="password"] {
   width: 80%;
 }
 
-#all-playlists a:hover {
+#all-playlists a:hover,
+#return-main a:hover {
   background-color: #bbb9b9;
 }
 
-#add-to-playlist {
+#add-to-playlist,
+#remove-from-playlist {
   padding: 0px 2px, 2px 0px;
   margin-left: 5px;
   border: none;
@@ -148,7 +161,8 @@ input[type="password"] {
   }
 
   #song,
-  #all-playlists a {
+  #all-playlists a,
+  #return-main a {
     flex-direction: column; /* Stack inhoud verticaal */
     font-size: 14px;
   }

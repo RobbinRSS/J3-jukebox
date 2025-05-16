@@ -7,7 +7,7 @@ import { AuthProvider } from "./AuthContext.jsx";
 import Header, { PopupContent } from "./header.jsx";
 import MainContent from "./content.jsx";
 import Footer from "./footer.jsx";
-import playlistPage from "./playlistPage.jsx";
+import PlaylistPage from "./playlistPage.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -16,7 +16,7 @@ createRoot(document.getElementById("root")).render(
         <Header />
         <Routes>
           <Route path="/" element={<MainContent />} />
-          <Route path="/temp-playlist" element={<playlistPage />} />{" "}
+          <Route path="/temp-playlist" element={<PlaylistPage />} />{" "}
         </Routes>
         <Footer />
       </Router>
