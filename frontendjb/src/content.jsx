@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "./AuthContext.jsx";
+import { Link } from "react-router-dom";
 import "./App.css";
 
 function MainContent() {
@@ -29,8 +30,10 @@ function MainContent() {
     if (!temporaryPlaylist) alert("Je hebt geen playlist");
 
     // check voor dubbelen
-    const test = temporaryPlaylist.songs.some((s) => s.id === song.id);
-    if (test) {
+    const duplicatesSong = temporaryPlaylist.songs.some(
+      (s) => s.id === song.id
+    );
+    if (duplicatesSong) {
       alert("song is already in playlist");
       return;
     }
@@ -41,6 +44,7 @@ function MainContent() {
       songs: [...temporaryPlaylist.songs, song],
     };
 
+    alert(`${song.song_title} is added to your playlist`);
     setTemporaryPlaylist(updatedPlaylist);
     console.log(updatedPlaylist);
     console.log(temporaryPlaylist);
@@ -89,7 +93,7 @@ function MainContent() {
       <section id="all-playlists">
         <div id="header-playlists">
           <h2>Playlists</h2>
-          <button onClick={createTempPlaylist}>Playlist aanmaken</button>
+          <button onClick={createTempPlaylist}>Create playlist</button>
         </div>
         {isLoggedIn ? (
           <>
@@ -104,7 +108,7 @@ function MainContent() {
         ) : (
           <>
             {temporaryPlaylist ? (
-              <a href="#">{temporaryPlaylist.name}</a>
+              <Link to="/temp-playlist">{temporaryPlaylist.name}</Link>
             ) : (
               <p>
                 Warning: User is not logged in, you can only create a temporary
