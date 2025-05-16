@@ -15,7 +15,18 @@ function PlaylistPage() {
     }
   }, []);
 
-  //   console.log(playlistSongs);
+  function removeFromPlaylist(id) {
+    const updatedSongs = playlistSongs.filter((song) => song.id !== id);
+
+    setPlaylistSongs(updatedSongs);
+
+    const stored = sessionStorage.getItem("tempPlaylist");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      parsed.songs = updatedSongs;
+      sessionStorage.setItem("tempPlaylist", JSON.stringify(parsed));
+    }
+  }
 
   return (
     <main>
@@ -29,7 +40,10 @@ function PlaylistPage() {
                 <span id="duration-song">
                   {(song.song_duration / 60).toFixed(2)} min
                 </span>
-                <button id="remove-from-playlist">
+                <button
+                  id="remove-from-playlist"
+                  onClick={() => removeFromPlaylist(song.id)}
+                >
                   <FontAwesomeIcon icon={faTrash} />
                 </button>
               </div>
