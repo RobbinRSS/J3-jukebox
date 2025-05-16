@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 function PlaylistPage() {
   const [playlistSongs, setPlaylistSongs] = useState([]);
@@ -27,7 +29,9 @@ function PlaylistPage() {
                 <span id="duration-song">
                   {(song.song_duration / 60).toFixed(2)} min
                 </span>
-                <button id="remove-from-playlist">-</button>
+                <button id="remove-from-playlist">
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
               </div>
             ));
           } else {

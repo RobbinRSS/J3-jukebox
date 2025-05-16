@@ -14,6 +14,12 @@ function MainContent() {
   });
 
   function createTempPlaylist() {
+    if (temporaryPlaylist) {
+      alert(
+        "You already have a playlist made, create a account to make more playlists"
+      );
+      return;
+    }
     if (!isLoggedIn) {
       const newTempPlaylist = {
         name: "Temporary playlist",
