@@ -4,6 +4,7 @@ const express = require("express");
 const mysql = require("mysql");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
+const { json } = require("sequelize");
 
 const app = express();
 app.use(cors());
@@ -72,6 +73,20 @@ app.post("/signup", (req, res) => {
           .json({ message: "Account successfully created" });
       }
     );
+  });
+});
+
+app.post("/createplaylist", (req, res) => {
+  const { name, userId } = req.body;
+
+  const sql =
+    "INSERT INTO playlists (name, userId, createdAt) VALUES (?, ?, ?)";
+
+  const createdAt = new Date();
+
+  db.query(sql, [name, userId, createdAt], (err, result) => {
+    if (err) return res.json(err);
+    return res.status(201).json({ message: "Playlist created" });
   });
 });
 

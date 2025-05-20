@@ -8,7 +8,7 @@ import "./App.css";
 function MainContent() {
   // data is de waarde, setData gebruik je als functie om de data aan te passen
   const [data, setData] = useState([]);
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, userInfo } = useContext(AuthContext);
 
   const [temporaryPlaylist, setTemporaryPlaylist] = useState(() => {
     const stored = sessionStorage.getItem("tempPlaylist");
