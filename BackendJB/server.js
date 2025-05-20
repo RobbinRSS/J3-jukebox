@@ -91,6 +91,7 @@ app.post("/createplaylist", (req, res) => {
   });
 });
 
+// get playlists that are connected to the logged in users id
 app.post("/getuserplaylists", (req, res) => {
   const { userId } = req.body;
 
@@ -101,7 +102,7 @@ app.post("/getuserplaylists", (req, res) => {
     if (!result) {
       return res.status(401).json({ message: "Something went wrong" });
     }
-    return res.status(200).json({ message: "Found playlists" });
+    return res.status(200).json(result);
   });
 });
 

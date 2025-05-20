@@ -8,6 +8,7 @@ import "./App.css";
 function MainContent() {
   // data is de waarde, setData gebruik je als functie om de data aan te passen
   const [data, setData] = useState([]);
+  const [userPlaylists, setUserPlaylists] = useState([]);
   const { isLoggedIn, userInfo } = useContext(AuthContext);
 
   const [temporaryPlaylist, setTemporaryPlaylist] = useState(() => {
@@ -15,7 +16,7 @@ function MainContent() {
     return stored ? JSON.parse(stored) : null;
   });
 
-  function createTempPlaylist() {
+  function createPlaylist() {
     if (!isLoggedIn) {
       if (temporaryPlaylist) {
         alert(
@@ -43,6 +44,23 @@ function MainContent() {
       });
     }
   }
+
+  useEffect(() => {
+    if (isLoggedIn && userInfo?.id) {
+      fetch("http://localhost:8081/getuserplaylists", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: userInfo.id }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setUserPlaylists(data);
+        })
+        .catch((err) => console.error("Error fetching playlists:", err));
+    }
+  }, [isLoggedIn, userInfo]); // alleen uitvoeren wanneer login state of user ID veranderd
 
   function addSongToTempPlaylist(song) {
     if (isLoggedIn) return;
@@ -110,17 +128,19 @@ function MainContent() {
       <section id="all-playlists">
         <div id="header-playlists">
           <h2>Playlists</h2>
-          <button onClick={createTempPlaylist}>Create playlist</button>
+          <button onClick={createPlaylist}>Create playlist</button>
         </div>
         {isLoggedIn ? (
           <>
-            <a href="#">Temporary playlist</a>
-            <a href="#">playlist[.name]</a>
-            <a href="#">playlist[.name]</a>
-            <a href="#">playlist[.name]</a>
-            <a href="#">playlist[.name]</a>
-            <a href="#">playlist[.name]</a>
-            <a href="#">playlist[.name]</a>
+            {userPlaylists.length > 0 ? (
+              <>
+                {userPlaylists.map((playlist) => (
+                  <a href="#">{playlist.name}</a>
+                ))}
+              </>
+            ) : (
+              <p>You have no playlists available</p>
+            )}
           </>
         ) : (
           <>
