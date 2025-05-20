@@ -76,6 +76,7 @@ app.post("/signup", (req, res) => {
   });
 });
 
+// query for creating playlist
 app.post("/createplaylist", (req, res) => {
   const { name, userId } = req.body;
 
@@ -87,6 +88,20 @@ app.post("/createplaylist", (req, res) => {
   db.query(sql, [name, userId, createdAt], (err, result) => {
     if (err) return res.json(err);
     return res.status(201).json({ message: "Playlist created" });
+  });
+});
+
+app.post("/getuserplaylists", (req, res) => {
+  const { userId } = req.body;
+
+  const sql = "SELECT * FROM playlists WHERE userId = ?";
+
+  db.query(sql, [userId], (err, result) => {
+    if (err) return res.json(err);
+    if (!result) {
+      return res.status(401).json({ message: "Something went wrong" });
+    }
+    return res.status(200).json({ message: "Found playlists" });
   });
 });
 
