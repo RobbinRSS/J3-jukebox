@@ -1,6 +1,8 @@
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "./AuthContext.jsx";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import "./App.css";
 
 function MainContent() {
@@ -52,8 +54,6 @@ function MainContent() {
 
     alert(`${song.song_title} is added to your playlist`);
     setTemporaryPlaylist(updatedPlaylist);
-    console.log(updatedPlaylist);
-    console.log(temporaryPlaylist);
     sessionStorage.setItem("tempPlaylist", JSON.stringify(updatedPlaylist));
   }
 
@@ -84,7 +84,7 @@ function MainContent() {
                     id="add-to-playlist"
                     onClick={() => addSongToTempPlaylist(song)}
                   >
-                    +
+                    <FontAwesomeIcon icon={faThumbsUp} />
                   </button>
                 </div>
               ));

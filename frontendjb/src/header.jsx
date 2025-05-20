@@ -10,8 +10,9 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
   const [errorMessage, setErrorMessage] = useState("");
   // console.log(password);
 
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const { setIsLoggedIn, setUserInfo } = useContext(AuthContext);
 
+  // BUG als iemand data consoled, krijgt hij alle gebruikers dit moet later opgelost worden
   useEffect(() => {
     fetch("http://localhost:8081/users")
       .then((res) => res.json())
@@ -23,6 +24,7 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
     e.preventDefault();
 
     const userNameFound = data.find((user) => user.name === username);
+    setUserInfo(userNameFound);
 
     if (userNameFound && loginType === "signUp") {
       setErrorMessage("Username already exists");
