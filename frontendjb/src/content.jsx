@@ -16,13 +16,13 @@ function MainContent() {
   });
 
   function createTempPlaylist() {
-    if (temporaryPlaylist) {
-      alert(
-        "You already have a playlist made, create a account to make more playlists"
-      );
-      return;
-    }
     if (!isLoggedIn) {
+      if (temporaryPlaylist) {
+        alert(
+          "You already have a playlist made, create a account to make more playlists"
+        );
+        return;
+      }
       const newTempPlaylist = {
         name: "Temporary playlist",
         songs: [],
@@ -30,6 +30,17 @@ function MainContent() {
       setTemporaryPlaylist(newTempPlaylist); // async (beschikbaar bij de volgende render)
       sessionStorage.setItem("tempPlaylist", JSON.stringify(newTempPlaylist)); // direct toegevoegd, dus de waarde van temporaryPlaylist word niet null
       // console.log("Tijdelijke playlist aangemaakt");
+    } else if (isLoggedIn) {
+      const userId = userInfo.id;
+      const name = prompt("Naam voor je playlist");
+
+      fetch("http://localhost:8081/createplaylist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, userId }),
+      });
     }
   }
 
