@@ -164,7 +164,7 @@ function MainContent() {
             {userPlaylists.length > 0 ? (
               <>
                 {userPlaylists.map((playlist) => (
-                  <a href="#">{playlist.name}</a>
+                  <Link to={`/playlist/${playlist.id}`}>{playlist.name}</Link>
                 ))}
               </>
             ) : (

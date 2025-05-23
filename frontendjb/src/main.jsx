@@ -17,6 +17,7 @@ createRoot(document.getElementById("root")).render(
         <Routes>
           <Route path="/" element={<MainContent />} />
           <Route path="/temp-playlist" element={<PlaylistPage />} />{" "}
+          <Route path="/playlist/:id" element={<PlaylistPage />} />
         </Routes>
         <Footer />
       </Router>

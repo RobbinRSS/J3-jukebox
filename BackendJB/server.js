@@ -99,6 +99,17 @@ app.post("/addsongtoplaylist", (req, res) => {
   );
 });
 
+app.post("/getsongfromplaylist", (req, res) => {
+  const { id } = req.body;
+
+  const sql = "SELECT * FROM playlist_songs WHERE playlistId = ?";
+
+  db.query(sql, [id], (err, result) => {
+    if (err) return res.json(err);
+    return res.status(201).json({ message: "songs loaded in" });
+  });
+});
+
 // query for creating playlist
 app.post("/createplaylist", (req, res) => {
   const { name, userId } = req.body;
