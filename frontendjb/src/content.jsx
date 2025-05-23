@@ -45,6 +45,18 @@ function MainContent() {
     }
   }
 
+  function addSongToUserPlaylist(song, playlist) {
+    // console.log(song, playlist);
+
+    fetch("http://localhost:8081/addsongtoplaylist", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ playlistId: playlist, song }),
+    }).catch((err) => console.error(err));
+  }
+
   useEffect(() => {
     if (isLoggedIn && userInfo?.id) {
       fetch("http://localhost:8081/getuserplaylists", {
@@ -113,12 +125,12 @@ function MainContent() {
                     onChange={(e) => {
                       if (e.target.value !== "") {
                         console.log(e, song);
-                        addSongToUserPlaylist(song, e.target.value); // TODO future function
+                        addSongToUserPlaylist(song, e.target.value);
                         e.target.value = ""; // reset dropdown
                       }
                     }}
                   >
-                    <option value="">➕ Toevoegen</option>
+                    <option value=""></option>
                     {userPlaylists.map((playlist) => (
                       <option key={playlist.id} value={playlist.id}>
                         {playlist.name}

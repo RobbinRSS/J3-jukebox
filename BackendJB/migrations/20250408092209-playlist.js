@@ -25,13 +25,6 @@ module.exports = {
         onUpdate: "CASCADE", // wanneer de gebruiker wordt bijgewerkt, wordt de waarde van 'userId' in playlists bijgewerkt
         onDelete: "CASCADE", // Wanneer de gebruiker wordt verwijderd, worden de bijbehorende playlists verwijderd
       },
-      songId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "songs",
-          key: "id",
-        },
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

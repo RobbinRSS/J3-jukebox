@@ -76,6 +76,29 @@ app.post("/signup", (req, res) => {
   });
 });
 
+// add song to playlist
+app.post("/addsongtoplaylist", (req, res) => {
+  const { playlistId, song } = req.body;
+
+  const sql =
+    "INSERT INTO playlist_songs (playlistId, songId, songTitle, songDuration, songGenre, createdAt) VALUES (?, ?, ?, ?, ?, ?)";
+
+  const createdAt = new Date();
+  const songId = song.id;
+  const songName = song.song_title;
+  const songDuration = song.song_duration;
+  const songGenre = song.genre;
+
+  db.query(
+    sql,
+    [playlistId, songId, songName, songDuration, songGenre, createdAt],
+    (err, result) => {
+      if (err) return res.json(err);
+      return res.status(201).json({ message: "Added song to playlist" });
+    }
+  );
+});
+
 // query for creating playlist
 app.post("/createplaylist", (req, res) => {
   const { name, userId } = req.body;
