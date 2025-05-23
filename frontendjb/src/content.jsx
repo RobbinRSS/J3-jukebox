@@ -100,27 +100,44 @@ function MainContent() {
         <h2>Songs</h2>
         <section id="all-songs">
           {/* NOTE function dat meteen word uitgevoerd, om het te renderen */}
-          {(() => {
-            if (data.length > 0) {
-              return data.map((song) => (
-                // Key maakt het makkelijker voor react als er iets word aangepast om het sneller te renderen
-                <div key={song.id} id="song">
-                  {song.song_title}{" "}
-                  <span id="duration-song">
-                    {(song.song_duration / 60).toFixed(2)} min
-                  </span>
+          {data.length > 0 ? (
+            data.map((song) => (
+              <div key={song.id} id="song">
+                {song.song_title}{" "}
+                <span id="duration-song">
+                  {(song.song_duration / 60).toFixed(2)} min
+                </span>
+                {isLoggedIn ? (
+                  <select
+                    id="dropdown"
+                    onChange={(e) => {
+                      if (e.target.value !== "") {
+                        console.log(e, song);
+                        addSongToUserPlaylist(song, e.target.value); // TODO future function
+                        e.target.value = ""; // reset dropdown
+                      }
+                    }}
+                  >
+                    <option value="">➕ Toevoegen</option>
+                    {userPlaylists.map((playlist) => (
+                      <option key={playlist.id} value={playlist.id}>
+                        {playlist.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
                   <button
                     id="add-to-playlist"
                     onClick={() => addSongToTempPlaylist(song)}
                   >
                     <FontAwesomeIcon icon={faThumbsUp} />
                   </button>
-                </div>
-              ));
-            } else {
-              return <p>No songs available</p>;
-            }
-          })()}
+                )}
+              </div>
+            ))
+          ) : (
+            <p>No songs available</p>
+          )}
         </section>
       </main>
 
