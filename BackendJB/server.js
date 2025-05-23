@@ -100,13 +100,13 @@ app.post("/addsongtoplaylist", (req, res) => {
 });
 
 app.post("/getsongfromplaylist", (req, res) => {
-  const { id } = req.body;
+  const { playlistId } = req.body;
 
   const sql = "SELECT * FROM playlist_songs WHERE playlistId = ?";
 
-  db.query(sql, [id], (err, result) => {
+  db.query(sql, [playlistId], (err, result) => {
     if (err) return res.json(err);
-    return res.status(201).json({ message: "songs loaded in" });
+    return res.status(200).json(result);
   });
 });
 

@@ -31,8 +31,8 @@ function PlaylistPage() {
   }
 
   // krijg de id parameter
+  const [playlistSongs, setPlaylistSongs] = useState([]);
   if (isLoggedIn) {
-    const [playlistSongs, setPlaylistSongs] = useState([]);
     const { id: playlistId } = useParams();
 
     useEffect(() => {
@@ -43,7 +43,7 @@ function PlaylistPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ playlistId }),
+        body: JSON.stringify({ playlistId: Number(playlistId) }),
       })
         .then((res) => res.json())
         .then((data) => {
@@ -79,8 +79,20 @@ function PlaylistPage() {
           ) : (
             <h2>No songs in playlist</h2>
           )
+        ) : playlistSongs.length > 0 ? (
+          playlistSongs.map((song) => (
+            <div key={song.id} id="song">
+              {song.songTitle}{" "}
+              <span id="duration-song">
+                {(song.songDuration / 60).toFixed(2)} min
+              </span>
+              <button id="remove-from-playlist">
+                <FontAwesomeIcon icon={faTrash} />
+              </button>
+            </div>
+          ))
         ) : (
-          <p>cool</p>
+          <p></p>
         )}
       </section>
       <div id="return-main">
