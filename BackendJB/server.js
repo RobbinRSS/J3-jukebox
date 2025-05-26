@@ -110,6 +110,17 @@ app.post("/getsongfromplaylist", (req, res) => {
   });
 });
 
+app.post("/deletesongfromplaylist", (req, res) => {
+  const { playlistId, songId } = req.body;
+
+  const sql = "DELETE FROM playlist_songs WHERE playlistId = ? AND songId = ?";
+
+  db.query(sql, [playlistId, songId], (err, result) => {
+    if (err) return res.json(err);
+    return res.status(200).json(result);
+  });
+});
+
 // query for creating playlist
 app.post("/createplaylist", (req, res) => {
   const { name, userId } = req.body;

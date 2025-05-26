@@ -8,6 +8,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 function PlaylistPage() {
   const { isLoggedIn } = useContext(AuthContext);
   const [tempPlaylistSongs, setTempPlaylistSongs] = useState([]);
+  const { id: playlistId } = useParams();
 
   useEffect(() => {
     const stored = sessionStorage.getItem("tempPlaylist");
@@ -18,43 +19,54 @@ function PlaylistPage() {
   }, []);
 
   function removeFromPlaylist(id) {
-    const updatedSongs = tempPlaylistSongs.filter((song) => song.id !== id);
+    if (!isLoggedIn) {
+      const updatedSongs = tempPlaylistSongs.filter((song) => song.id !== id);
 
-    setTempPlaylistSongs(updatedSongs);
+      setTempPlaylistSongs(updatedSongs);
 
-    const stored = sessionStorage.getItem("tempPlaylist");
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      parsed.songs = updatedSongs;
-      sessionStorage.setItem("tempPlaylist", JSON.stringify(parsed));
+      const stored = sessionStorage.getItem("tempPlaylist");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        parsed.songs = updatedSongs;
+        sessionStorage.setItem("tempPlaylist", JSON.stringify(parsed));
+      }
+    } else if (isLoggedIn) {
+      fetch("http://localhost:8081/deletesongfromplaylist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ playlistId: Number(playlistId), songId: id }),
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to delete song from playlist");
+          // Verwijder uit state zodat UI direct updatet
+          setPlaylistSongs((prev) => prev.filter((song) => song.songId !== id));
+        })
+        .catch((err) => console.error("Error removing song:", err));
     }
   }
 
   // krijg de id parameter
   const [playlistSongs, setPlaylistSongs] = useState([]);
-  if (isLoggedIn) {
-    const { id: playlistId } = useParams();
+  useEffect(() => {
+    if (!isLoggedIn || !playlistId) return;
 
-    useEffect(() => {
-      if (!playlistId) return;
-
-      fetch("http://localhost:8081/getsongfromplaylist", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ playlistId: Number(playlistId) }),
+    fetch("http://localhost:8081/getsongfromplaylist", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ playlistId: Number(playlistId) }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setPlaylistSongs(data);
       })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          setPlaylistSongs(data);
-        })
-        .catch((err) => console.log(err));
-    }, [playlistId]);
+      .catch((err) => console.log(err));
+  }, [isLoggedIn, playlistId]);
 
-    // console.log(playlistSongs);
-  }
+  // console.log(playlistSongs);
 
   return (
     <main>
@@ -86,13 +98,16 @@ function PlaylistPage() {
               <span id="duration-song">
                 {(song.songDuration / 60).toFixed(2)} min
               </span>
-              <button id="remove-from-playlist">
+              <button
+                id="remove-from-playlist"
+                onClick={() => removeFromPlaylist(song.songId)}
+              >
                 <FontAwesomeIcon icon={faTrash} />
               </button>
             </div>
           ))
         ) : (
-          <p></p>
+          <h2>No songs in playlist</h2>
         )}
       </section>
       <div id="return-main">
