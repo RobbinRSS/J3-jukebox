@@ -6,16 +6,52 @@ const bcrypt = require("bcryptjs");
 const cors = require("cors");
 const { json } = require("sequelize");
 
+// for sessions with server side //
+const session = require("express-session");
+const dotenv = require("dotenv");
+dotenv.config();
+//
+
 const app = express();
-app.use(cors());
 app.use(express.json()); // Zorg ervoor dat de body goed wordt geparsed
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "jukebox",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
 });
+
+// server side session for storing user info //
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false },
+  })
+);
+
+// check for session //
+app.get("/check-session", (req, res) => {
+  if (req.session.user) {
+    return res.json({ loggedIn: true, user: req.session.user });
+  } else {
+    return res.json({ loggedIn: false });
+  }
+});
+//
+
+// frontend toegang //
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL, // frontend mag toegang krijgen
+    credentials: true,
+  })
+);
+//
+
+//
 
 app.get("/", (re, res) => {
   return res.json("From backend side");
@@ -47,7 +83,16 @@ app.post("/signin", (req, res) => {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      return res.status(200).json({ message: "User logged in successfully" });
+      req.session.user = {
+        id: user.id,
+        username: user.name,
+      };
+
+      return res.status(200).json({
+        message: "User logged in successfully",
+        id: user.id,
+        username: user.name,
+      });
     });
   });
 });

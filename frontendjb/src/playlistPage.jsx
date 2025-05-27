@@ -8,6 +8,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 function PlaylistPage() {
   const { isLoggedIn } = useContext(AuthContext);
   const [tempPlaylistSongs, setTempPlaylistSongs] = useState([]);
+  const [playlistSongs, setPlaylistSongs] = useState([]);
   const { id: playlistId } = useParams();
 
   useEffect(() => {
@@ -47,8 +48,7 @@ function PlaylistPage() {
     }
   }
 
-  // krijg de id parameter
-  const [playlistSongs, setPlaylistSongs] = useState([]);
+  // inladen van songs, ingelogde gebruiker //
   useEffect(() => {
     if (!isLoggedIn || !playlistId) return;
 
@@ -65,12 +65,13 @@ function PlaylistPage() {
       })
       .catch((err) => console.log(err));
   }, [isLoggedIn, playlistId]);
+  //
 
   // console.log(playlistSongs);
 
   return (
     <main>
-      <h2>Temporary Playlist</h2>
+      {!isLoggedIn ? <h2>Temporary Playlist</h2> : <h2>Jouw playlist</h2>}
       <section id="all-songs">
         {!isLoggedIn ? (
           tempPlaylistSongs.length > 0 ? (

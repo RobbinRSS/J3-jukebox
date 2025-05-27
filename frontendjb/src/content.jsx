@@ -99,7 +99,10 @@ function MainContent() {
   }
 
   useEffect(() => {
-    fetch("http://localhost:8081/songs")
+    fetch("http://localhost:8081/songs", {
+      method: "GET",
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => setData(data))
       .catch((err) => console.log(err));

@@ -4,31 +4,27 @@ import { AuthContext } from "./AuthContext.jsx";
 import "./index.css";
 
 export function PopupContent({ setUsernameFromLogin, loginType }) {
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]); BUG
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  // console.log(password);
 
   const { setIsLoggedIn, setUserInfo } = useContext(AuthContext);
 
   // BUG als iemand data consoled, krijgt hij alle gebruikers dit moet later opgelost worden
-  useEffect(() => {
-    fetch("http://localhost:8081/users")
-      .then((res) => res.json())
-      .then((data) => setData(data))
-      .catch((err) => console.log(err));
-  }, []); // [] shows object only once
+  // useEffect(() => {
+  //   fetch("http://localhost:8081/users")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setData(data);
+  //     })
+  //     .catch((err) => console.log(err));
+  // }, []); // [] shows object only once
 
-  const handleSubmit = function (e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    const userNameFound = data.find((user) => user.name === username);
-    setUserInfo(userNameFound);
-
-    if (userNameFound && loginType === "signUp") {
-      setErrorMessage("Username already exists");
-    } else if (loginType === "signIn") {
+    if (loginType === "signIn") {
       fetch("http://localhost:8081/signin", {
         method: "POST",
         headers: {
@@ -39,16 +35,18 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
         .then((res) => res.json())
         .then((data) => {
           if (data.message === "User logged in successfully") {
-            setUsernameFromLogin(username);
+            setUserInfo({ id: data.id, username: data.username });
+            setUsernameFromLogin(data.username);
             setIsLoggedIn(true);
           } else {
-            setErrorMessage(data.message);
+            setErrorMessage(data.message || "Login failed");
           }
         })
-        .catch((err) => console.log(err));
-    } else if (!userNameFound && loginType === "signIn") {
-      setErrorMessage("User is not found");
-    } else if (!userNameFound && loginType === "signUp") {
+        .catch((err) => {
+          console.log(err);
+          setErrorMessage("Something went wrong during sign in");
+        });
+    } else if (loginType === "signUp") {
       fetch("http://localhost:8081/signup", {
         method: "POST",
         headers: {
@@ -58,10 +56,18 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
       })
         .then((res) => res.json())
         .then((data) => {
-          setUsernameFromLogin(username);
-          setIsLoggedIn(true);
+          if (data.message === "Account successfully created") {
+            setUserInfo({ id: data.id, username: data.username });
+            setUsernameFromLogin(data.username);
+            setIsLoggedIn(true);
+          } else {
+            setErrorMessage(data.message || "Sign up failed");
+          }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          setErrorMessage("Something went wrong during sign up");
+        });
     }
   };
 
