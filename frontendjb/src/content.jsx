@@ -16,6 +16,11 @@ function MainContent() {
     return stored ? JSON.parse(stored) : null;
   });
 
+  fetch("http://localhost:8081/check-session", {
+    method: "GET",
+    credentials: "include",
+  });
+
   function createPlaylist() {
     if (!isLoggedIn) {
       if (temporaryPlaylist) {

@@ -13,7 +13,17 @@ dotenv.config();
 //
 
 const app = express();
+
 app.use(express.json()); // Zorg ervoor dat de body goed wordt geparsed
+
+// frontend toegang //
+app.use(
+  cors({
+    origin: "http://localhost:5173", // frontend mag toegang krijgen
+    credentials: true,
+  })
+);
+//
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -25,10 +35,10 @@ const db = mysql.createConnection({
 // server side session for storing user info //
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false },
+    secret: process.env.SESSION_SECRET, // secret wordt gebruikt om de sessies veilig te ondertekenen
+    resave: false, // alleen opslaan als er iets gewijzigd is in de sessie.
+    saveUninitialized: false, //  geen lege sessies aanmaken.
+    cookie: { secure: false, sameSite: "lax" }, // geen HTTPS nodig (je zet dit op true als je met HTTPS werkt).
   })
 );
 
@@ -42,28 +52,10 @@ app.get("/check-session", (req, res) => {
 });
 //
 
-// frontend toegang //
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL, // frontend mag toegang krijgen
-    credentials: true,
-  })
-);
-//
-
 //
 
 app.get("/", (re, res) => {
   return res.json("From backend side");
-});
-
-// query to users || localhost:8081/users
-app.get("/users", (req, res) => {
-  const sql = "SELECT * FROM users";
-  db.query(sql, (err, data) => {
-    if (err) return res.json(err);
-    return res.json(data);
-  });
 });
 
 app.post("/signin", (req, res) => {

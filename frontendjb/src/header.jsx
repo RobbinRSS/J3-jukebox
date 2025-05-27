@@ -98,6 +98,22 @@ function Header() {
   const [username, setUsername] = useState("");
   const [type, setLoginType] = useState("");
 
+  useEffect(() => {
+    fetch("http://localhost:8081/check-session", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.loggedIn) {
+          setUsername(data.user.username);
+        }
+      })
+      .catch((err) => {
+        console.error("Error checking session:", err);
+      });
+  }, []);
+
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 

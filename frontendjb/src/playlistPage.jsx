@@ -11,6 +11,11 @@ function PlaylistPage() {
   const [playlistSongs, setPlaylistSongs] = useState([]);
   const { id: playlistId } = useParams();
 
+  fetch("http://localhost:8081/check-session", {
+    method: "GET",
+    credentials: "include",
+  });
+
   useEffect(() => {
     const stored = sessionStorage.getItem("tempPlaylist");
     if (stored) {
