@@ -9,12 +9,22 @@ function PlaylistPage() {
   const { isLoggedIn } = useContext(AuthContext);
   const [tempPlaylistSongs, setTempPlaylistSongs] = useState([]);
   const [playlistSongs, setPlaylistSongs] = useState([]);
+  const [userSession, setUserSession] = useState({});
   const { id: playlistId } = useParams();
 
-  fetch("http://localhost:8081/check-session", {
-    method: "GET",
-    credentials: "include",
-  });
+  useEffect(() => {
+    fetch("http://localhost:8081/check-session", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.loggedIn) {
+          setUserSession(data);
+        }
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   useEffect(() => {
     const stored = sessionStorage.getItem("tempPlaylist");
@@ -25,7 +35,7 @@ function PlaylistPage() {
   }, []);
 
   function removeFromPlaylist(id) {
-    if (!isLoggedIn) {
+    if (!userSession.loggedIn) {
       const updatedSongs = tempPlaylistSongs.filter((song) => song.id !== id);
 
       setTempPlaylistSongs(updatedSongs);
@@ -36,7 +46,7 @@ function PlaylistPage() {
         parsed.songs = updatedSongs;
         sessionStorage.setItem("tempPlaylist", JSON.stringify(parsed));
       }
-    } else if (isLoggedIn) {
+    } else if (userSession.loggedIn) {
       fetch("http://localhost:8081/deletesongfromplaylist", {
         method: "POST",
         credentials: "include",
@@ -56,7 +66,7 @@ function PlaylistPage() {
 
   // inladen van songs, ingelogde gebruiker //
   useEffect(() => {
-    if (!isLoggedIn || !playlistId) return;
+    if (!userSession.loggedIn || !playlistId) return;
 
     fetch("http://localhost:8081/getsongfromplaylist", {
       method: "POST",
@@ -71,16 +81,20 @@ function PlaylistPage() {
         setPlaylistSongs(data);
       })
       .catch((err) => console.log(err));
-  }, [isLoggedIn, playlistId]);
+  }, [userSession.loggedIn, playlistId]);
   //
 
   // console.log(playlistSongs);
 
   return (
     <main>
-      {!isLoggedIn ? <h2>Temporary Playlist</h2> : <h2>Your playlist</h2>}
+      {!userSession.loggedIn ? (
+        <h2>Temporary Playlist</h2>
+      ) : (
+        <h2>Your playlist</h2>
+      )}
       <section id="all-songs">
-        {!isLoggedIn ? (
+        {!userSession.loggedIn ? (
           tempPlaylistSongs.length > 0 ? (
             tempPlaylistSongs.map((song) => (
               <div key={song.id} id="song">
