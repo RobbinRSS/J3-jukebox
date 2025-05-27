@@ -90,7 +90,7 @@ function MainContent() {
         })
         .catch((err) => console.error("Error fetching playlists:", err));
     }
-  }, [userSession]); // alleen uitvoeren wanneer login state of user ID veranderd
+  }, [userSession, userPlaylists]); // alleen uitvoeren wanneer login state of user ID veranderd
 
   function addSongToTempPlaylist(song) {
     if (userSession.loggedIn) return;
