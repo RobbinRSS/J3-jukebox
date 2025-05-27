@@ -11,22 +11,13 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
 
   const { setIsLoggedIn, setUserInfo } = useContext(AuthContext);
 
-  // BUG als iemand data consoled, krijgt hij alle gebruikers dit moet later opgelost worden
-  // useEffect(() => {
-  //   fetch("http://localhost:8081/users")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setData(data);
-  //     })
-  //     .catch((err) => console.log(err));
-  // }, []); // [] shows object only once
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (loginType === "signIn") {
       fetch("http://localhost:8081/signin", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -49,6 +40,7 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
     } else if (loginType === "signUp") {
       fetch("http://localhost:8081/signup", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },

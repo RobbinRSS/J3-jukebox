@@ -34,6 +34,7 @@ function PlaylistPage() {
     } else if (isLoggedIn) {
       fetch("http://localhost:8081/deletesongfromplaylist", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -54,6 +55,7 @@ function PlaylistPage() {
 
     fetch("http://localhost:8081/getsongfromplaylist", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -71,7 +73,7 @@ function PlaylistPage() {
 
   return (
     <main>
-      {!isLoggedIn ? <h2>Temporary Playlist</h2> : <h2>Jouw playlist</h2>}
+      {!isLoggedIn ? <h2>Temporary Playlist</h2> : <h2>Your playlist</h2>}
       <section id="all-songs">
         {!isLoggedIn ? (
           tempPlaylistSongs.length > 0 ? (

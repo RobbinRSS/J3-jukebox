@@ -37,6 +37,7 @@ function MainContent() {
 
       fetch("http://localhost:8081/createplaylist", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -50,6 +51,7 @@ function MainContent() {
 
     fetch("http://localhost:8081/addsongtoplaylist", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-type": "application/json",
       },
@@ -61,6 +63,7 @@ function MainContent() {
     if (isLoggedIn && userInfo?.id) {
       fetch("http://localhost:8081/getuserplaylists", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
