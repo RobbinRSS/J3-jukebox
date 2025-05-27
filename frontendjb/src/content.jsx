@@ -9,20 +9,30 @@ function MainContent() {
   // data is de waarde, setData gebruik je als functie om de data aan te passen
   const [data, setData] = useState([]);
   const [userPlaylists, setUserPlaylists] = useState([]);
-  const { isLoggedIn, userInfo } = useContext(AuthContext);
+  // const { isLoggedIn, userInfo } = useContext(AuthContext);
+  const [userSession, setUserSession] = useState({});
 
   const [temporaryPlaylist, setTemporaryPlaylist] = useState(() => {
     const stored = sessionStorage.getItem("tempPlaylist");
     return stored ? JSON.parse(stored) : null;
   });
 
-  fetch("http://localhost:8081/check-session", {
-    method: "GET",
-    credentials: "include",
-  });
+  useEffect(() => {
+    fetch("http://localhost:8081/check-session", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.loggedIn) {
+          setUserSession(data);
+        }
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   function createPlaylist() {
-    if (!isLoggedIn) {
+    if (!userSession.loggedIn) {
       if (temporaryPlaylist) {
         alert(
           "You already have a playlist made, create a account to make more playlists"
@@ -36,8 +46,8 @@ function MainContent() {
       setTemporaryPlaylist(newTempPlaylist); // async (beschikbaar bij de volgende render)
       sessionStorage.setItem("tempPlaylist", JSON.stringify(newTempPlaylist)); // direct toegevoegd, dus de waarde van temporaryPlaylist word niet null
       // console.log("Tijdelijke playlist aangemaakt");
-    } else if (isLoggedIn) {
-      const userId = userInfo.id;
+    } else if (userSession.loggedIn) {
+      const userId = userSession.user.id;
       const name = prompt("Naam voor je playlist");
 
       fetch("http://localhost:8081/createplaylist", {
@@ -65,14 +75,14 @@ function MainContent() {
   }
 
   useEffect(() => {
-    if (isLoggedIn && userInfo?.id) {
+    if (userSession.loggedIn && userSession.user?.id) {
       fetch("http://localhost:8081/getuserplaylists", {
         method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId: userInfo.id }),
+        body: JSON.stringify({ userId: userSession.user.id }),
       })
         .then((res) => res.json())
         .then((data) => {
@@ -80,10 +90,10 @@ function MainContent() {
         })
         .catch((err) => console.error("Error fetching playlists:", err));
     }
-  }, [isLoggedIn, userInfo]); // alleen uitvoeren wanneer login state of user ID veranderd
+  }, [userSession]); // alleen uitvoeren wanneer login state of user ID veranderd
 
   function addSongToTempPlaylist(song) {
-    if (isLoggedIn) return;
+    if (userSession.loggedIn) return;
     if (!temporaryPlaylist) alert("Je hebt geen playlist");
 
     // check voor dubbelen
@@ -130,7 +140,7 @@ function MainContent() {
                 <span id="duration-song">
                   {(song.song_duration / 60).toFixed(2)} min
                 </span>
-                {isLoggedIn ? (
+                {userSession.loggedIn ? (
                   <select
                     id="dropdown"
                     onChange={(e) => {
@@ -170,7 +180,7 @@ function MainContent() {
           <h2>Playlists</h2>
           <button onClick={createPlaylist}>Create playlist</button>
         </div>
-        {isLoggedIn ? (
+        {userSession.loggedIn ? (
           <>
             {userPlaylists.length > 0 ? (
               <>
