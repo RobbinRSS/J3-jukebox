@@ -90,7 +90,7 @@ function MainContent() {
         })
         .catch((err) => console.error("Error fetching playlists:", err));
     }
-  }, [userSession, userPlaylists]); // alleen uitvoeren wanneer login state of user ID veranderd
+  }, [userSession, userPlaylists]);
 
   function addSongToTempPlaylist(song) {
     if (userSession.loggedIn) return;
@@ -185,7 +185,9 @@ function MainContent() {
             {userPlaylists.length > 0 ? (
               <>
                 {userPlaylists.map((playlist) => (
-                  <Link to={`/playlist/${playlist.id}`}>{playlist.name}</Link>
+                  <Link key={playlist.id} to={`/playlist/${playlist.id}`}>
+                    {playlist.name}
+                  </Link>
                 ))}
               </>
             ) : (
