@@ -1,18 +1,24 @@
 // NOTE Authcontext is bedoeld om data zoals isLoggedIn te delen tussen componenten een soortvan globale veriabele
 
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userInfo, setUserInfo] = useState({});
-  console.log(userInfo);
+  const [userSession, setUserSession] = useState({ loggedIn: false });
+
+  useEffect(() => {
+    fetch("http://localhost:8081/check-session", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => setUserSession(data))
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ isLoggedIn, setIsLoggedIn, userInfo, setUserInfo }}
-    >
+    <AuthContext.Provider value={{ userSession, setUserSession }}>
       {children}
     </AuthContext.Provider>
   );

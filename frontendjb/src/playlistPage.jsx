@@ -6,25 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 function PlaylistPage() {
-  const { isLoggedIn } = useContext(AuthContext);
   const [tempPlaylistSongs, setTempPlaylistSongs] = useState([]);
+  const [playlist, setPlaylist] = useState([]);
   const [playlistSongs, setPlaylistSongs] = useState([]);
-  const [userSession, setUserSession] = useState({});
+  const { userSession, setUserSession } = useContext(AuthContext);
   const { id: playlistId } = useParams();
-
-  useEffect(() => {
-    fetch("http://localhost:8081/check-session", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.loggedIn) {
-          setUserSession(data);
-        }
-      })
-      .catch((err) => console.error(err));
-  }, []);
 
   useEffect(() => {
     const stored = sessionStorage.getItem("tempPlaylist");
@@ -64,6 +50,24 @@ function PlaylistPage() {
     }
   }
 
+  // playlist info krijgen
+  useEffect(() => {
+    if (!userSession.loggedIn || !playlistId) return;
+
+    fetch("http://localhost:8081/getselectedplaylist", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ playlistId }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setPlaylist(data[0]);
+      });
+  }, [playlistId, userSession.loggedIn]);
+
   // inladen van songs, ingelogde gebruiker //
   useEffect(() => {
     if (!userSession.loggedIn || !playlistId) return;
@@ -91,7 +95,7 @@ function PlaylistPage() {
       {!userSession.loggedIn ? (
         <h2>Temporary Playlist</h2>
       ) : (
-        <h2>Your playlist</h2>
+        <h2>{playlist.name}</h2>
       )}
       <section id="all-songs">
         {!userSession.loggedIn ? (

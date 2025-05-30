@@ -9,27 +9,13 @@ function MainContent() {
   // data is de waarde, setData gebruik je als functie om de data aan te passen
   const [data, setData] = useState([]);
   const [userPlaylists, setUserPlaylists] = useState([]);
-  // const { isLoggedIn, userInfo } = useContext(AuthContext);
-  const [userSession, setUserSession] = useState({});
+
+  const { userSession, setUserSession } = useContext(AuthContext);
 
   const [temporaryPlaylist, setTemporaryPlaylist] = useState(() => {
     const stored = sessionStorage.getItem("tempPlaylist");
     return stored ? JSON.parse(stored) : null;
   });
-
-  useEffect(() => {
-    fetch("http://localhost:8081/check-session", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.loggedIn) {
-          setUserSession(data);
-        }
-      })
-      .catch((err) => console.error(err));
-  }, []);
 
   function createPlaylist() {
     if (!userSession.loggedIn) {
@@ -57,7 +43,7 @@ function MainContent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ name, userId }),
-      });
+      }).then(() => fetchUserPlaylists());
     }
   }
 
@@ -74,7 +60,7 @@ function MainContent() {
     }).catch((err) => console.error(err));
   }
 
-  useEffect(() => {
+  function fetchUserPlaylists() {
     if (userSession.loggedIn && userSession.user?.id) {
       fetch("http://localhost:8081/getuserplaylists", {
         method: "POST",
@@ -90,7 +76,14 @@ function MainContent() {
         })
         .catch((err) => console.error("Error fetching playlists:", err));
     }
-  }, [userSession, userPlaylists]);
+  }
+
+  // initializeren van de eerste lading
+  useEffect(() => {
+    if (userSession.loggedIn && userSession.user?.id) {
+      fetchUserPlaylists();
+    }
+  }, [userSession.loggedIn]);
 
   function addSongToTempPlaylist(song) {
     if (userSession.loggedIn) return;

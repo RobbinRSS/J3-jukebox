@@ -188,6 +188,18 @@ app.post("/getuserplaylists", (req, res) => {
   });
 });
 
+// get info from selected playlist
+app.post("/getselectedplaylist", (req, res) => {
+  const { playlistId } = req.body;
+
+  const sql = "SELECT * FROM playlists WHERE id = ?";
+
+  db.query(sql, [playlistId], (err, result) => {
+    if (err) return res.json(err);
+    return res.status(200).json(result);
+  });
+});
+
 // query to users || localhost:8081/songs
 app.get("/songs", (req, res) => {
   const sql = "SELECT * FROM songs";

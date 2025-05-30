@@ -1,15 +1,15 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "./AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 import "./index.css";
 
 export function PopupContent({ setUsernameFromLogin, loginType }) {
-  // const [data, setData] = useState([]); BUG
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
-  const { setIsLoggedIn, setUserInfo } = useContext(AuthContext);
+  const { setUserSession } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,9 +26,9 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
         .then((res) => res.json())
         .then((data) => {
           if (data.message === "User logged in successfully") {
-            setUserInfo({ id: data.id, username: data.username });
             setUsernameFromLogin(data.username);
-            setIsLoggedIn(true);
+            setUserSession({ loggedIn: true, user: data.user });
+            navigate("/");
           } else {
             setErrorMessage(data.message || "Login failed");
           }
@@ -49,9 +49,7 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
         .then((res) => res.json())
         .then((data) => {
           if (data.message === "Account successfully created") {
-            setUserInfo({ id: data.id, username: data.username });
             setUsernameFromLogin(data.username);
-            setIsLoggedIn(true);
           } else {
             setErrorMessage(data.message || "Sign up failed");
           }
