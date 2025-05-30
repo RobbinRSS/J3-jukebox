@@ -171,7 +171,7 @@ function Header() {
                   }
                 }}
               >
-                <option value="">Account</option>
+                <option value=""></option>
                 <option value="logout">Logout</option>
               </select>
             </div>
