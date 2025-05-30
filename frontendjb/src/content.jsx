@@ -3,6 +3,8 @@ import { AuthContext } from "./AuthContext.jsx";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer } from "react-toastify";
+import { showSuccess, showError } from "./toastifyMsg.jsx";
 import "./App.css";
 
 function MainContent() {
@@ -20,7 +22,7 @@ function MainContent() {
   function createPlaylist() {
     if (!userSession.loggedIn) {
       if (temporaryPlaylist) {
-        alert(
+        showError(
           "You already have a playlist made, create a account to make more playlists"
         );
         return;
@@ -31,7 +33,9 @@ function MainContent() {
       };
       setTemporaryPlaylist(newTempPlaylist); // async (beschikbaar bij de volgende render)
       sessionStorage.setItem("tempPlaylist", JSON.stringify(newTempPlaylist)); // direct toegevoegd, dus de waarde van temporaryPlaylist word niet null
-      // console.log("Tijdelijke playlist aangemaakt");
+      showSuccess(
+        "Temporary playlist is created, if you want to make more playlists create a account"
+      );
     } else if (userSession.loggedIn) {
       const userId = userSession.user.id;
       const name = prompt("Naam voor je playlist");
@@ -43,7 +47,10 @@ function MainContent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ name, userId }),
-      }).then(() => fetchUserPlaylists());
+      }).then(() => {
+        showSuccess("Playlist is created");
+        fetchUserPlaylists();
+      });
     }
   }
 
@@ -57,7 +64,12 @@ function MainContent() {
         "Content-type": "application/json",
       },
       body: JSON.stringify({ playlistId: playlist, song }),
-    }).catch((err) => console.error(err));
+    })
+      .then(() => showSuccess("Song added to your playlist!"))
+      .catch((err) => {
+        showError("Something went wrong!");
+        console.error(err);
+      });
   }
 
   function fetchUserPlaylists() {
@@ -87,14 +99,14 @@ function MainContent() {
 
   function addSongToTempPlaylist(song) {
     if (userSession.loggedIn) return;
-    if (!temporaryPlaylist) alert("Je hebt geen playlist");
+    if (!temporaryPlaylist) showError("Je hebt geen playlist");
 
     // check voor dubbelen
     const duplicatesSong = temporaryPlaylist.songs.some(
       (s) => s.id === song.id
     );
     if (duplicatesSong) {
-      alert("song is already in playlist");
+      showError("song is already in playlist");
       return;
     }
 
@@ -104,7 +116,7 @@ function MainContent() {
       songs: [...temporaryPlaylist.songs, song],
     };
 
-    alert(`${song.song_title} is added to your playlist`);
+    showSuccess(`${song.song_title} is added to your playlist`);
     setTemporaryPlaylist(updatedPlaylist);
     sessionStorage.setItem("tempPlaylist", JSON.stringify(updatedPlaylist));
   }
@@ -200,6 +212,7 @@ function MainContent() {
           </>
         )}
       </section>
+      <ToastContainer />
     </>
   );
 }

@@ -4,6 +4,8 @@ import "./App.css";
 import { Link, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer } from "react-toastify";
+import { showSuccess, showError } from "./toastifyMsg.jsx";
 
 function PlaylistPage() {
   const [tempPlaylistSongs, setTempPlaylistSongs] = useState([]);
@@ -31,6 +33,7 @@ function PlaylistPage() {
         const parsed = JSON.parse(stored);
         parsed.songs = updatedSongs;
         sessionStorage.setItem("tempPlaylist", JSON.stringify(parsed));
+        showSuccess("Song succesfully removed from playlist!");
       }
     } else if (userSession.loggedIn) {
       fetch(`${import.meta.env.VITE_API_URL}/deletesongfromplaylist`, {
@@ -45,8 +48,12 @@ function PlaylistPage() {
           if (!res.ok) throw new Error("Failed to delete song from playlist");
           // Verwijder uit state zodat UI direct updatet
           setPlaylistSongs((prev) => prev.filter((song) => song.songId !== id));
+          showSuccess("Song succesfully removed from playlist!");
         })
-        .catch((err) => console.error("Error removing song:", err));
+        .catch((err) => {
+          console.error("Error removing song:", err);
+          showError("Something went wrong!");
+        });
     }
   }
 
@@ -139,6 +146,7 @@ function PlaylistPage() {
       <div id="return-main">
         <Link to="/">Return to main page</Link>
       </div>
+      <ToastContainer />
     </main>
   );
 }
