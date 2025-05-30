@@ -95,6 +95,7 @@ function Header() {
   const [showModal, setShowModal] = useState(false);
   const [username, setUsername] = useState("");
   const [type, setLoginType] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/check-session`, {
@@ -111,6 +112,21 @@ function Header() {
         console.error("Error checking session:", err);
       });
   }, []);
+
+  function logOut() {
+    fetch(`${import.meta.env.VITE_API_URL}/log-out`, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then(() => {
+        setUsername("");
+        navigate("/");
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.error("Error during logout:", err);
+      });
+  }
 
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
@@ -142,10 +158,23 @@ function Header() {
           </>
         )) || (
           <>
-            {" "}
-            <p>
-              <b>{username}</b>
-            </p>{" "}
+            <div className="user-info">
+              <p>
+                <b>{username}</b>
+              </p>
+              <select
+                name="dropdown-user"
+                id="dropdown-user"
+                onChange={(e) => {
+                  if (e.target.value === "logout") {
+                    logOut();
+                  }
+                }}
+              >
+                <option value="">Account</option>
+                <option value="logout">Logout</option>
+              </select>
+            </div>
           </>
         )}
       </header>
