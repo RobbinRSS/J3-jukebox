@@ -33,7 +33,7 @@ function PlaylistPage() {
         sessionStorage.setItem("tempPlaylist", JSON.stringify(parsed));
       }
     } else if (userSession.loggedIn) {
-      fetch("http://localhost:8081/deletesongfromplaylist", {
+      fetch(`${import.meta.env.VITE_API_URL}/deletesongfromplaylist`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -54,7 +54,7 @@ function PlaylistPage() {
   useEffect(() => {
     if (!userSession.loggedIn || !playlistId) return;
 
-    fetch("http://localhost:8081/getselectedplaylist", {
+    fetch(`${import.meta.env.VITE_API_URL}/getselectedplaylist`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -72,7 +72,7 @@ function PlaylistPage() {
   useEffect(() => {
     if (!userSession.loggedIn || !playlistId) return;
 
-    fetch("http://localhost:8081/getsongfromplaylist", {
+    fetch(`${import.meta.env.VITE_API_URL}/getsongfromplaylist`, {
       method: "POST",
       credentials: "include",
       headers: {

@@ -15,7 +15,7 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
     e.preventDefault();
 
     if (loginType === "signIn") {
-      fetch("http://localhost:8081/signin", {
+      fetch(`${import.meta.env.VITE_API_URL}/signin`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -38,7 +38,7 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
           setErrorMessage("Something went wrong during sign in");
         });
     } else if (loginType === "signUp") {
-      fetch("http://localhost:8081/signup", {
+      fetch(`${import.meta.env.VITE_API_URL}/signup`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -97,7 +97,7 @@ function Header() {
   const [type, setLoginType] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8081/check-session", {
+    fetch(`${import.meta.env.VITE_API_URL}/check-session`, {
       method: "GET",
       credentials: "include",
     })

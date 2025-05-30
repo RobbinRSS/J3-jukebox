@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
   const [userSession, setUserSession] = useState({ loggedIn: false });
 
   useEffect(() => {
-    fetch("http://localhost:8081/check-session", {
+    fetch(`${import.meta.env.VITE_API_URL}/check-session`, {
       method: "GET",
       credentials: "include",
     })

@@ -36,7 +36,7 @@ function MainContent() {
       const userId = userSession.user.id;
       const name = prompt("Naam voor je playlist");
 
-      fetch("http://localhost:8081/createplaylist", {
+      fetch(`${import.meta.env.VITE_API_URL}/createplaylist`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -50,7 +50,7 @@ function MainContent() {
   function addSongToUserPlaylist(song, playlist) {
     // console.log(song, playlist);
 
-    fetch("http://localhost:8081/addsongtoplaylist", {
+    fetch(`${import.meta.env.VITE_API_URL}/addsongtoplaylist`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -62,7 +62,7 @@ function MainContent() {
 
   function fetchUserPlaylists() {
     if (userSession.loggedIn && userSession.user?.id) {
-      fetch("http://localhost:8081/getuserplaylists", {
+      fetch(`${import.meta.env.VITE_API_URL}/getuserplaylists`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -110,7 +110,7 @@ function MainContent() {
   }
 
   useEffect(() => {
-    fetch("http://localhost:8081/songs", {
+    fetch(`${import.meta.env.VITE_API_URL}/songs`, {
       method: "GET",
       credentials: "include",
     })
