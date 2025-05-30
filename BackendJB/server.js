@@ -106,22 +106,39 @@ app.post("/signin", (req, res) => {
 app.post("/signup", (req, res) => {
   const { username, password } = req.body;
 
-  // Hash the password
   bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) return res.json(err);
 
-    // Insert the new user into the database
     const insertSql =
       "INSERT INTO users (name, password, createdAt) VALUES (?, ?, ?)";
     const createdAt = new Date();
+
     db.query(
       insertSql,
       [username, hashedPassword, createdAt],
       (err, result) => {
-        if (err) return res.json(err);
-        return res
-          .status(201)
-          .json({ message: "Account successfully created" });
+        if (err)
+          return res
+            .status(500)
+            .json({ message: "Account creation failed", error: err });
+
+        // Nieuwe gebruiker ophalen met SELECT
+        const selectSql = "SELECT * FROM users WHERE name = ?";
+        db.query(selectSql, [username], (err, data) => {
+          if (err) return res.status(500).json(err);
+
+          const user = data[0];
+          req.session.user = {
+            id: user.id,
+            username: user.name,
+          };
+
+          return res.status(201).json({
+            message: "Account successfully created",
+            id: user.id,
+            username: user.name,
+          });
+        });
       }
     );
   });

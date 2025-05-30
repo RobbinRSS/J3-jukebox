@@ -29,6 +29,7 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
             setUsernameFromLogin(data.username);
             setUserSession({ loggedIn: true, user: data.user });
             navigate("/");
+            window.location.reload();
           } else {
             setErrorMessage(data.message || "Login failed");
           }
@@ -50,6 +51,8 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
         .then((data) => {
           if (data.message === "Account successfully created") {
             setUsernameFromLogin(data.username);
+            navigate("/");
+            window.location.reload();
           } else {
             setErrorMessage(data.message || "Sign up failed");
           }
