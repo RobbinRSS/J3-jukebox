@@ -140,7 +140,7 @@ function MainContent() {
           {/* NOTE function dat meteen word uitgevoerd, om het te renderen */}
           {data.length > 0 ? (
             data.map((song) => (
-              <div key={song.id} id="song">
+              <Link key={song.id} id="song" to={`/song/${song.id}`}>
                 {song.song_title}{" "}
                 <span id="duration-song">
                   {(song.song_duration / 60).toFixed(2)} min
@@ -171,7 +171,7 @@ function MainContent() {
                     <FontAwesomeIcon icon={faThumbsUp} />
                   </button>
                 )}
-              </div>
+              </Link>
             ))
           ) : (
             <p>No songs available</p>

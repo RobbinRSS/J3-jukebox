@@ -8,6 +8,7 @@ import Header, { PopupContent } from "./header.jsx";
 import MainContent from "./content.jsx";
 import Footer from "./footer.jsx";
 import PlaylistPage from "./playlistPage.jsx";
+import SongInfo from "./songInfo.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/" element={<MainContent />} />
           <Route path="/temp-playlist" element={<PlaylistPage />} />{" "}
           <Route path="/playlist/:id" element={<PlaylistPage />} />
+          <Route path="/song/:id" element={<SongInfo />} />
         </Routes>
         <Footer />
       </Router>
