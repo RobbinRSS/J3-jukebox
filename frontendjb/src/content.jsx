@@ -12,7 +12,8 @@ function MainContent() {
   const [data, setData] = useState([]);
   const [userPlaylists, setUserPlaylists] = useState([]);
 
-  const { userSession, setUserSession } = useContext(AuthContext);
+  const { userSession, setUserSession, formatDuration } =
+    useContext(AuthContext);
 
   const [temporaryPlaylist, setTemporaryPlaylist] = useState(() => {
     const stored = sessionStorage.getItem("tempPlaylist");
@@ -140,10 +141,10 @@ function MainContent() {
           {/* NOTE function dat meteen word uitgevoerd, om het te renderen */}
           {data.length > 0 ? (
             data.map((song) => (
-              <Link key={song.id} id="song" to={`/song/${song.id}`}>
-                {song.song_title}{" "}
+              <div key={song.id} id="song">
+                <Link to={`/song/${song.id}`}>{song.song_title} </Link>
                 <span id="duration-song">
-                  {(song.song_duration / 60).toFixed(2)} min
+                  {formatDuration(song.song_duration)} min
                 </span>
                 {userSession.loggedIn ? (
                   <select
@@ -171,7 +172,7 @@ function MainContent() {
                     <FontAwesomeIcon icon={faThumbsUp} />
                   </button>
                 )}
-              </Link>
+              </div>
             ))
           ) : (
             <p>No songs available</p>

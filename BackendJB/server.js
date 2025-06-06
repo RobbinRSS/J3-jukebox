@@ -240,6 +240,16 @@ app.get("/songs", (req, res) => {
   });
 });
 
+app.post("/getselectedsong", (req, res) => {
+  const { id } = req.body;
+  const sql = "SELECT * FROM songs WHERE id = ?";
+
+  db.query(sql, [id], (err, result) => {
+    if (err) return res.json(err);
+    return res.status(200).json(result);
+  });
+});
+
 // NOTE localhost:8081
 app.listen(8081, () => {
   console.log("listening");

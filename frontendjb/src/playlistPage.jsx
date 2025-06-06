@@ -11,7 +11,8 @@ function PlaylistPage() {
   const [tempPlaylistSongs, setTempPlaylistSongs] = useState([]);
   const [playlist, setPlaylist] = useState([]);
   const [playlistSongs, setPlaylistSongs] = useState([]);
-  const { userSession, setUserSession } = useContext(AuthContext);
+  const { userSession, setUserSession, formatDuration } =
+    useContext(AuthContext);
   const { id: playlistId } = useParams();
 
   useEffect(() => {
@@ -111,7 +112,7 @@ function PlaylistPage() {
               <div key={song.id} id="song">
                 {song.song_title}{" "}
                 <span id="duration-song">
-                  {(song.song_duration / 60).toFixed(2)} min
+                  {formatDuration(song.song_duration)} min
                 </span>
                 <button
                   id="remove-from-playlist"
@@ -129,7 +130,7 @@ function PlaylistPage() {
             <div key={song.id} id="song">
               {song.songTitle}{" "}
               <span id="duration-song">
-                {(song.songDuration / 60).toFixed(2)} min
+                {formatDuration(song.songDuration)} min
               </span>
               <button
                 id="remove-from-playlist"

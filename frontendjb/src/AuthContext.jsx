@@ -17,8 +17,16 @@ export function AuthProvider({ children }) {
       .catch((err) => console.error(err));
   }, []);
 
+  function formatDuration(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  }
+
   return (
-    <AuthContext.Provider value={{ userSession, setUserSession }}>
+    <AuthContext.Provider
+      value={{ userSession, setUserSession, formatDuration }}
+    >
       {children}
     </AuthContext.Provider>
   );

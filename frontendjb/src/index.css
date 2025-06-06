@@ -46,6 +46,11 @@ button[type="submit"],
   color: white;
 }
 
+a {
+  text-decoration: none;
+  color: white;
+}
+
 #dropdown,
 #dropdown-user {
   padding: 6px 10px;
