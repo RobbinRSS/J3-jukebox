@@ -169,12 +169,25 @@ app.post("/addsongtoplaylist", (req, res) => {
 
 app.post("/getsongfromplaylist", (req, res) => {
   const { playlistId } = req.body;
+  const userId = req.session.user?.id;
 
-  const sql = "SELECT * FROM playlist_songs WHERE playlistId = ?";
+  if (!userId) {
+    return res.status(401).json({ message: "Not authorized" });
+  }
 
-  db.query(sql, [playlistId], (err, result) => {
-    if (err) return res.json(err);
-    return res.status(200).json(result);
+  const checkOwnershipSql =
+    "SELECT * FROM playlists WHERE id = ? AND userId = ?";
+  db.query(checkOwnershipSql, [playlistId, userId], (err, ownershipResult) => {
+    if (err) return res.status(500).json({ message: "Something went wrong" });
+    if (ownershipResult.length === 0) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const sql = "SELECT * FROM playlist_songs WHERE playlistId = ?";
+    db.query(sql, [playlistId], (err, result) => {
+      if (err) return res.status(500).json({ message: "Error loading songs" });
+      return res.status(200).json(result);
+    });
   });
 });
 
@@ -222,11 +235,19 @@ app.post("/getuserplaylists", (req, res) => {
 // get info from selected playlist
 app.post("/getselectedplaylist", (req, res) => {
   const { playlistId } = req.body;
+  const userId = req.session.user?.id;
 
-  const sql = "SELECT * FROM playlists WHERE id = ?";
+  if (!userId) {
+    return res.status(401).json({ message: "Not authorized" });
+  }
 
-  db.query(sql, [playlistId], (err, result) => {
-    if (err) return res.json(err);
+  const sql = "SELECT * FROM playlists WHERE id = ? AND userId = ?";
+
+  db.query(sql, [playlistId, userId], (err, result) => {
+    if (err) return res.status(500).json({ message: "Something went wrong!" });
+    if (result.length === 0) {
+      return res.status(403).json({ message: "Access denied" });
+    }
     return res.status(200).json(result);
   });
 });
