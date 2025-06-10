@@ -66,7 +66,13 @@ function MainContent() {
       },
       body: JSON.stringify({ playlistId: playlist, song }),
     })
-      .then(() => showSuccess("Song added to your playlist!"))
+      .then((res) => {
+        if (res.status === 409) {
+          showError("Song was already in playlist");
+          return;
+        }
+        showSuccess("Song added to your playlist!");
+      })
       .catch((err) => {
         showError("Something went wrong!");
         console.error(err);

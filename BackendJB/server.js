@@ -148,23 +148,45 @@ app.post("/signup", (req, res) => {
 app.post("/addsongtoplaylist", (req, res) => {
   const { playlistId, song } = req.body;
 
-  const sql =
-    "INSERT INTO playlist_songs (playlistId, songId, songTitle, songDuration, songGenre, createdAt) VALUES (?, ?, ?, ?, ?, ?)";
+  const checkSql = `
+    SELECT * FROM playlist_songs 
+    WHERE playlistId = ? AND songId = ?
+  `;
 
-  const createdAt = new Date();
-  const songId = song.id;
-  const songName = song.song_title;
-  const songDuration = song.song_duration;
-  const songGenre = song.genre;
-
-  db.query(
-    sql,
-    [playlistId, songId, songName, songDuration, songGenre, createdAt],
-    (err, result) => {
-      if (err) return res.json(err);
-      return res.status(201).json({ message: "Added song to playlist" });
+  db.query(checkSql, [playlistId, song.id], (err, result) => {
+    if (err) {
+      console.error("Check error:", err);
+      return res.status(500).json({ message: "Internal server error" });
     }
-  );
+
+    if (result.length > 0) {
+      return res.status(409).json({ message: "Song already in playlist" });
+    }
+
+    // PAS HIER NAAR BINNEN verplaatsen
+    const sql = `
+      INSERT INTO playlist_songs (playlistId, songId, songTitle, songDuration, songGenre, createdAt) 
+      VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+    const createdAt = new Date();
+    const songId = song.id;
+    const songName = song.song_title;
+    const songDuration = song.song_duration;
+    const songGenre = song.genre;
+
+    db.query(
+      sql,
+      [playlistId, songId, songName, songDuration, songGenre, createdAt],
+      (err, result) => {
+        if (err) {
+          console.error("Insert error:", err);
+          return res.status(500).json({ message: "Failed to add song" });
+        }
+        return res.status(201).json({ message: "Added song to playlist" });
+      }
+    );
+  });
 });
 
 app.post("/getsongfromplaylist", (req, res) => {
