@@ -14,6 +14,7 @@ function PlaylistPage() {
   const { userSession, setUserSession, formatDuration } =
     useContext(AuthContext);
   const { id: playlistId } = useParams();
+  const [totalDurationPlaylist, setTotalDuration] = useState();
 
   useEffect(() => {
     const stored = sessionStorage.getItem("tempPlaylist");
@@ -22,6 +23,22 @@ function PlaylistPage() {
       setTempPlaylistSongs(parsed.songs || []);
     }
   }, []);
+
+  function totalDuration() {
+    if (!userSession.loggedIn) {
+      setTotalDuration(
+        tempPlaylistSongs.reduce((acc, song) => acc + song.song_duration, 0)
+      );
+    } else {
+      setTotalDuration(
+        playlistSongs.reduce((acc, song) => acc + song.songDuration, 0)
+      );
+    }
+  }
+
+  useEffect(() => {
+    totalDuration();
+  }, [tempPlaylistSongs, playlistSongs, userSession]);
 
   function removeFromPlaylist(id) {
     if (!userSession.loggedIn) {
@@ -144,6 +161,9 @@ function PlaylistPage() {
           <h2>No songs in playlist</h2>
         )}
       </section>
+      <div id="playlist-duration">
+        Total duration: {formatDuration(totalDurationPlaylist)} min
+      </div>
       <div id="return-main">
         <Link to="/">Return to main page</Link>
       </div>
