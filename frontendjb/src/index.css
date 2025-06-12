@@ -36,7 +36,8 @@ header {
 
 #header-btns button,
 button[type="submit"],
-#header-playlists button {
+#header-playlists button,
+#edit-playlist {
   margin: 3px;
   padding: 10px;
   background: linear-gradient(to right, #319962, #2cc968);

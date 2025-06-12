@@ -274,6 +274,25 @@ app.post("/getselectedplaylist", (req, res) => {
   });
 });
 
+app.post("/updateplaylist", (req, res) => {
+  const { playlistId, newName } = req.body;
+
+  const sql = "UPDATE playlists SET name = ? WHERE id = ?";
+
+  db.query(sql, [newName, playlistId], (err, result) => {
+    if (err) {
+      console.error("Error updating playlist:", err);
+      return res.status(500).json({ message: "Something went wrong!" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+
+    res.json({ message: "Playlist updated successfully" });
+  });
+});
+
 // query to users || localhost:8081/songs
 app.get("/songs", (req, res) => {
   const sql = "SELECT * FROM songs";

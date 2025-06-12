@@ -3,7 +3,7 @@ import { AuthContext } from "./AuthContext.jsx";
 import "./App.css";
 import { Link, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faPen } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer } from "react-toastify";
 import { showSuccess, showError } from "./toastifyMsg.jsx";
 
@@ -23,6 +23,27 @@ function PlaylistPage() {
       setTempPlaylistSongs(parsed.songs || []);
     }
   }, []);
+
+  function changePlaylistName() {
+    const newName = prompt("Change name");
+    if (!newName) return;
+    fetch(`${import.meta.env.VITE_API_URL}/updateplaylist`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ playlistId, newName }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.error(err);
+        showError("Something went wrong");
+      });
+  }
 
   function totalDuration() {
     if (!userSession.loggedIn) {
@@ -113,14 +134,17 @@ function PlaylistPage() {
   }, [userSession.loggedIn, playlistId]);
   //
 
-  // console.log(playlistSongs);
-
   return (
     <main>
       {!userSession.loggedIn ? (
         <h2>Temporary Playlist</h2>
       ) : (
-        <h2>{playlist.name}</h2>
+        <h2>
+          {playlist.name}{" "}
+          <button id="edit-playlist" onClick={changePlaylistName}>
+            <FontAwesomeIcon icon={faPen}></FontAwesomeIcon>
+          </button>
+        </h2>
       )}
       <section id="all-songs">
         {!userSession.loggedIn ? (
