@@ -10,6 +10,9 @@ import Footer from "./footer.jsx";
 import PlaylistPage from "./playlistPage.jsx";
 import SongInfo from "./songInfo.jsx";
 
+// Route = for pathign
+// Authprovider = for global variables shared between all files
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>

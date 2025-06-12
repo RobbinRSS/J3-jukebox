@@ -1,3 +1,4 @@
+// imports //
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "./AuthContext.jsx";
 import { Link } from "react-router-dom";
@@ -6,9 +7,10 @@ import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer } from "react-toastify";
 import { showSuccess, showError } from "./toastifyMsg.jsx";
 import "./App.css";
+//
 
 function MainContent() {
-  // data is de waarde, setData gebruik je als functie om de data aan te passen
+  // variables //
   const [data, setData] = useState([]);
   const [userPlaylists, setUserPlaylists] = useState([]);
 
@@ -19,7 +21,9 @@ function MainContent() {
     const stored = sessionStorage.getItem("tempPlaylist");
     return stored ? JSON.parse(stored) : null;
   });
+  //
 
+  // function for creating a playlist //
   function createPlaylist() {
     if (!userSession.loggedIn) {
       if (temporaryPlaylist) {
@@ -54,10 +58,10 @@ function MainContent() {
       });
     }
   }
+  //
 
+  // function for adding a song to the selected playlist //
   function addSongToUserPlaylist(song, playlist) {
-    // console.log(song, playlist);
-
     fetch(`${import.meta.env.VITE_API_URL}/addsongtoplaylist`, {
       method: "POST",
       credentials: "include",
@@ -78,7 +82,9 @@ function MainContent() {
         console.error(err);
       });
   }
+  //
 
+  // function for initializing all the playlists //
   function fetchUserPlaylists() {
     if (userSession.loggedIn && userSession.user?.id) {
       fetch(`${import.meta.env.VITE_API_URL}/getuserplaylists`, {
@@ -103,7 +109,9 @@ function MainContent() {
       fetchUserPlaylists();
     }
   }, [userSession.loggedIn]);
+  //
 
+  // function for non logged in users to add a song to their temporary playlist //
   function addSongToTempPlaylist(song) {
     if (userSession.loggedIn) return;
     if (!temporaryPlaylist) showError("Je hebt geen playlist");
@@ -127,7 +135,9 @@ function MainContent() {
     setTemporaryPlaylist(updatedPlaylist);
     sessionStorage.setItem("tempPlaylist", JSON.stringify(updatedPlaylist));
   }
+  //
 
+  // initialize to get all songs //
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/songs`, {
       method: "GET",
@@ -137,6 +147,7 @@ function MainContent() {
       .then((data) => setData(data))
       .catch((err) => console.log(err));
   }, []);
+  //
 
   return (
     <>

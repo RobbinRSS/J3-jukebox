@@ -1,20 +1,26 @@
+// imports //
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "./AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
-
 import "./index.css";
+//
 
+// popupcontent
 export function PopupContent({ setUsernameFromLogin, loginType }) {
+  // variables //
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const { setUserSession } = useContext(AuthContext);
   const navigate = useNavigate();
+  //
 
+  // on submitting form it will check what the login type is (sign in / sign up) and will post to the database //
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (loginType === "signIn") {
+      // for sign in //
       fetch(`${import.meta.env.VITE_API_URL}/signin`, {
         method: "POST",
         credentials: "include",
@@ -39,6 +45,7 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
           setErrorMessage("Something went wrong during sign in");
         });
     } else if (loginType === "signUp") {
+      // for sign up
       fetch(`${import.meta.env.VITE_API_URL}/signup`, {
         method: "POST",
         credentials: "include",
@@ -63,6 +70,7 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
         });
     }
   };
+  //
 
   return (
     <>
@@ -95,11 +103,14 @@ export function PopupContent({ setUsernameFromLogin, loginType }) {
 }
 
 function Header() {
+  // variables //
   const [showModal, setShowModal] = useState(false);
   const [username, setUsername] = useState("");
   const [type, setLoginType] = useState("");
   const navigate = useNavigate();
+  //
 
+  // check server side session to set the username //
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/check-session`, {
       method: "GET",
@@ -115,7 +126,9 @@ function Header() {
         console.error("Error checking session:", err);
       });
   }, []);
+  //
 
+  // function for logging out //
   function logOut() {
     fetch(`${import.meta.env.VITE_API_URL}/log-out`, {
       method: "GET",
@@ -130,7 +143,9 @@ function Header() {
         console.error("Error during logout:", err);
       });
   }
+  //
 
+  // function for opening or closing the popuo //
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 
@@ -143,11 +158,14 @@ function Header() {
     setLoginType("signUp");
     openModal();
   };
+  //
 
+  // setting username after logging in //
   const setUsernameFromLogin = (name) => {
     setUsername(name);
     closeModal();
   };
+  //
   return (
     <>
       <header>

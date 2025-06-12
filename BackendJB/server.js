@@ -72,6 +72,7 @@ app.get("/", (re, res) => {
   return res.json("From backend side");
 });
 
+// query for signing in //
 app.post("/signin", (req, res) => {
   const { username, password } = req.body;
 
@@ -102,7 +103,9 @@ app.post("/signin", (req, res) => {
     });
   });
 });
+//
 
+// query for signing up //
 app.post("/signup", (req, res) => {
   const { username, password } = req.body;
 
@@ -143,8 +146,9 @@ app.post("/signup", (req, res) => {
     );
   });
 });
+//
 
-// add song to playlist
+// add song to playlist//
 app.post("/addsongtoplaylist", (req, res) => {
   const { playlistId, song } = req.body;
 
@@ -188,7 +192,9 @@ app.post("/addsongtoplaylist", (req, res) => {
     );
   });
 });
+//
 
+// get all songs from selected playlist //
 app.post("/getsongfromplaylist", (req, res) => {
   const { playlistId } = req.body;
   const userId = req.session.user?.id;
@@ -212,7 +218,9 @@ app.post("/getsongfromplaylist", (req, res) => {
     });
   });
 });
+//
 
+// deleting song from playlist //
 app.post("/deletesongfromplaylist", (req, res) => {
   const { playlistId, songId } = req.body;
 
@@ -223,8 +231,9 @@ app.post("/deletesongfromplaylist", (req, res) => {
     return res.status(200).json(result);
   });
 });
+//
 
-// query for creating playlist
+// query for creating playlist//
 app.post("/createplaylist", (req, res) => {
   const { name, userId } = req.body;
 
@@ -238,8 +247,9 @@ app.post("/createplaylist", (req, res) => {
     return res.status(201).json({ message: "Playlist created" });
   });
 });
+//
 
-// get playlists that are connected to the logged in users id
+// get playlists that are connected to the logged in users id //
 app.post("/getuserplaylists", (req, res) => {
   const { userId } = req.body;
 
@@ -253,8 +263,9 @@ app.post("/getuserplaylists", (req, res) => {
     return res.status(200).json(result);
   });
 });
+//
 
-// get info from selected playlist
+// get info from selected playlist //
 app.post("/getselectedplaylist", (req, res) => {
   const { playlistId } = req.body;
   const userId = req.session.user?.id;
@@ -273,7 +284,9 @@ app.post("/getselectedplaylist", (req, res) => {
     return res.status(200).json(result);
   });
 });
+//
 
+// query for updating the playlist name //
 app.post("/updateplaylist", (req, res) => {
   const { playlistId, newName } = req.body;
 
@@ -292,6 +305,7 @@ app.post("/updateplaylist", (req, res) => {
     res.json({ message: "Playlist updated successfully" });
   });
 });
+//
 
 // query to users || localhost:8081/songs
 app.get("/songs", (req, res) => {
@@ -301,7 +315,9 @@ app.get("/songs", (req, res) => {
     return res.json(data);
   });
 });
+//
 
+// get info from selected song //
 app.post("/getselectedsong", (req, res) => {
   const { id } = req.body;
   const sql = "SELECT * FROM songs WHERE id = ?";
@@ -311,6 +327,7 @@ app.post("/getselectedsong", (req, res) => {
     return res.status(200).json(result);
   });
 });
+//
 
 // NOTE localhost:8081
 app.listen(8081, () => {

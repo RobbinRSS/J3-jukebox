@@ -1,16 +1,21 @@
+// imports //
 import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "./AuthContext.jsx";
 import { useEffect, useState, useContext } from "react";
 import { ToastContainer } from "react-toastify";
 import { showError } from "./toastifyMsg.jsx";
+//
 
 function SongInfo() {
+  // variables //
   const { id } = useParams();
 
   const [song, setSong] = useState([]);
 
   const { formatDuration } = useContext(AuthContext);
+  //
 
+  // get the song info from the selected song //
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/getselectedsong`, {
       method: "post",
@@ -24,6 +29,7 @@ function SongInfo() {
       .then((data) => setSong(data[0]))
       .catch((err) => showError("Something went wrong!"));
   }, [id]);
+  //
 
   return (
     <>

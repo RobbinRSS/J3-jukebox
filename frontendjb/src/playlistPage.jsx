@@ -1,3 +1,4 @@
+// imports //
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "./AuthContext.jsx";
 import "./App.css";
@@ -6,8 +7,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPen } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer } from "react-toastify";
 import { showSuccess, showError } from "./toastifyMsg.jsx";
+//
 
 function PlaylistPage() {
+  // variables //
   const [tempPlaylistSongs, setTempPlaylistSongs] = useState([]);
   const [playlist, setPlaylist] = useState([]);
   const [playlistSongs, setPlaylistSongs] = useState([]);
@@ -15,7 +18,9 @@ function PlaylistPage() {
     useContext(AuthContext);
   const { id: playlistId } = useParams();
   const [totalDurationPlaylist, setTotalDuration] = useState();
+  //
 
+  // get songs from temporary playlist //
   useEffect(() => {
     const stored = sessionStorage.getItem("tempPlaylist");
     if (stored) {
@@ -23,7 +28,9 @@ function PlaylistPage() {
       setTempPlaylistSongs(parsed.songs || []);
     }
   }, []);
+  //
 
+  // function for changing playlist //
   function changePlaylistName() {
     const newName = prompt("Change name");
     if (!newName) return;
@@ -44,7 +51,9 @@ function PlaylistPage() {
         showError("Something went wrong");
       });
   }
+  //
 
+  // get the total duration from all songs in the playlist //
   function totalDuration() {
     if (!userSession.loggedIn) {
       setTotalDuration(
@@ -60,7 +69,9 @@ function PlaylistPage() {
   useEffect(() => {
     totalDuration();
   }, [tempPlaylistSongs, playlistSongs, userSession]);
+  //
 
+  // function for removing songs //
   function removeFromPlaylist(id) {
     if (!userSession.loggedIn) {
       const updatedSongs = tempPlaylistSongs.filter((song) => song.id !== id);
@@ -95,8 +106,9 @@ function PlaylistPage() {
         });
     }
   }
+  //
 
-  // playlist info krijgen
+  // get playlist info //
   useEffect(() => {
     if (!userSession.loggedIn || !playlistId) return;
 
@@ -113,8 +125,9 @@ function PlaylistPage() {
         setPlaylist(data[0]);
       });
   }, [playlistId, userSession.loggedIn]);
+  //
 
-  // inladen van songs, ingelogde gebruiker //
+  // loading in songs from logged in user //
   useEffect(() => {
     if (!userSession.loggedIn || !playlistId) return;
 
