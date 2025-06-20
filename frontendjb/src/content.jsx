@@ -153,7 +153,17 @@ function MainContent() {
     <>
       {/* NOTE main gaat de design importeren van alle songs of als gebruiker op playlist klikt dan playlist */}
       <main>
-        <h2>Songs</h2>
+        <div id="start-container">
+          <h2>Songs</h2>
+          <select id="dropdown">
+            <option value=""></option>
+            {data.map((song) => (
+              <option key={song.genre} value={song.genre}>
+                {song.genre}
+              </option>
+            ))}
+          </select>
+        </div>
         <section id="all-songs">
           {/* NOTE function dat meteen word uitgevoerd, om het te renderen */}
           {data.length > 0 ? (
