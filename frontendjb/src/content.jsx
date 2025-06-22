@@ -13,6 +13,8 @@ function MainContent() {
   // variables //
   const [data, setData] = useState([]);
   const [userPlaylists, setUserPlaylists] = useState([]);
+  const [filteredSongs, setFilteredSongs] = useState([]);
+  const uniqueGenres = [...new Set(data.map((song) => song.genre))];
 
   const { userSession, setUserSession, formatDuration } =
     useContext(AuthContext);
@@ -111,6 +113,25 @@ function MainContent() {
   }, [userSession.loggedIn]);
   //
 
+  // function for getting filtered songs array TODO //
+  function fetchFilteredSongs(genre) {
+    fetch(`${import.meta.env.VITE_API_URL}/getfilteredsongs`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ genre }),
+    })
+      .then((res) => res.json())
+      .then((data) => setFilteredSongs(data))
+      .catch((err) => {
+        console.error(err);
+        showError("Could not filter songs");
+      });
+  }
+  //
+
   // function for non logged in users to add a song to their temporary playlist //
   function addSongToTempPlaylist(song) {
     if (userSession.loggedIn) return;
@@ -155,11 +176,19 @@ function MainContent() {
       <main>
         <div id="start-container">
           <h2>Songs</h2>
-          <select id="dropdown">
+          <select
+            id="dropdown"
+            onChange={(e) => {
+              if (e.target.value !== "") {
+                fetchFilteredSongs(e.target.value);
+              }
+            }}
+          >
+            {/* BUG dubbele genres worden ingeladen in de dropdown*/}
             <option value=""></option>
-            {data.map((song) => (
-              <option key={song.genre} value={song.genre}>
-                {song.genre}
+            {uniqueGenres.map((genre) => (
+              <option key={genre} value={genre}>
+                {genre}
               </option>
             ))}
           </select>

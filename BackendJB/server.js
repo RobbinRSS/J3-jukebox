@@ -317,6 +317,20 @@ app.get("/songs", (req, res) => {
 });
 //
 
+// query for getting filtered songs //
+app.post("/getfilteredsongs", (req, res) => {
+  const { genre } = req.body;
+
+  const sql = "SELECT * FROM songs WHERE genre = ?";
+
+  db.query(sql, [genre], (err, result) => {
+    if (err) return res.json(err);
+    return res.status(200).json(result);
+  });
+});
+
+//
+
 // get info from selected song //
 app.post("/getselectedsong", (req, res) => {
   const { id } = req.body;
