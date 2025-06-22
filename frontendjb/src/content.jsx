@@ -15,6 +15,7 @@ function MainContent() {
   const [userPlaylists, setUserPlaylists] = useState([]);
   const [filteredSongs, setFilteredSongs] = useState([]);
   const uniqueGenres = [...new Set(data.map((song) => song.genre))];
+  const songsToDisplay = filteredSongs.length > 0 ? filteredSongs : data;
 
   const { userSession, setUserSession, formatDuration } =
     useContext(AuthContext);
@@ -181,10 +182,11 @@ function MainContent() {
             onChange={(e) => {
               if (e.target.value !== "") {
                 fetchFilteredSongs(e.target.value);
+              } else if (e.target.value === "") {
+                setFilteredSongs([]);
               }
             }}
           >
-            {/* BUG dubbele genres worden ingeladen in de dropdown*/}
             <option value=""></option>
             {uniqueGenres.map((genre) => (
               <option key={genre} value={genre}>
@@ -195,8 +197,8 @@ function MainContent() {
         </div>
         <section id="all-songs">
           {/* NOTE function dat meteen word uitgevoerd, om het te renderen */}
-          {data.length > 0 ? (
-            data.map((song) => (
+          {songsToDisplay.length > 0 ? (
+            songsToDisplay.map((song) => (
               <div key={song.id} id="song">
                 <Link to={`/song/${song.id}`}>{song.song_title} </Link>
                 <span id="duration-song">
