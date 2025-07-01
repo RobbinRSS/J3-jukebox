@@ -251,7 +251,9 @@ app.post("/createplaylist", (req, res) => {
 
   db.query(sql, [name, userId, createdAt], (err, result) => {
     if (err) return res.json(err);
-    return res.status(201).json({ message: "Playlist created" });
+    return res
+      .status(201)
+      .json({ message: "Playlist created", playlistId: result.insertId });
   });
 });
 //

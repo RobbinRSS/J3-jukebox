@@ -131,6 +131,7 @@ function MainContent() {
         showError("Could not filter songs");
       });
   }
+
   //
 
   // function for non logged in users to add a song to their temporary playlist //
@@ -156,6 +157,67 @@ function MainContent() {
     showSuccess(`${song.song_title} is added to your playlist`);
     setTemporaryPlaylist(updatedPlaylist);
     sessionStorage.setItem("tempPlaylist", JSON.stringify(updatedPlaylist));
+  }
+  //
+
+  // TODO logged in user can migrate the temporary playlist //
+  function migrateTempPlaylistToReal() {
+    if (!userSession.loggedIn) {
+      showError("You must be logged in to migrate your playlist.");
+      return;
+    }
+    if (!temporaryPlaylist || temporaryPlaylist.songs.length === 0) {
+      showError("You have no temporary playlist to migrate.");
+      return;
+    }
+
+    const userId = userSession.user.id;
+
+    // 1. Maak een nieuwe playlist aan voor de gebruiker
+    fetch(`${import.meta.env.VITE_API_URL}/createplaylist`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: temporaryPlaylist.name || "Migrated playlist",
+        userId,
+      }),
+    })
+      .then((res) => res.json())
+      .then((playlistData) => {
+        const newPlaylistId = playlistData.playlistId || playlistData.id; // afhankelijk van API response
+
+        // 2. Voeg alle songs uit tijdelijke playlist toe aan deze playlist
+        const addSongPromises = temporaryPlaylist.songs.map((song) => {
+          return fetch(`${import.meta.env.VITE_API_URL}/addsongtoplaylist`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              playlistId: newPlaylistId,
+              song,
+            }),
+          });
+        });
+
+        //  Wacht totdat alle fetch calls voor songs toevoegen klaar zijn fucking cool trouwens dat dit een ding is
+        return Promise.all(addSongPromises).then(() => newPlaylistId);
+      })
+      .then((newPlaylistId) => {
+        // 3. Clear tijdelijke playlist en update user playlists
+        sessionStorage.removeItem("tempPlaylist");
+        setTemporaryPlaylist(null);
+        showSuccess("Temporary playlist migrated to your account!");
+        fetchUserPlaylists();
+      })
+      .catch((err) => {
+        console.error("Migration error:", err);
+        showError("Failed to migrate temporary playlist.");
+      });
   }
   //
 
@@ -243,6 +305,13 @@ function MainContent() {
         <div id="header-playlists">
           <h2>Playlists</h2>
           <button onClick={createPlaylist}>Create playlist</button>
+          {userSession.loggedIn &&
+            temporaryPlaylist &&
+            temporaryPlaylist.songs.length > 0 && (
+              <button onClick={migrateTempPlaylistToReal}>
+                Migrate Temporary Playlist to My Account
+              </button>
+            )}
         </div>
         {userSession.loggedIn ? (
           <>
