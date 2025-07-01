@@ -27,18 +27,6 @@ module.exports = {
         },
         onDelete: "CASCADE",
       },
-      songTitle: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      songDuration: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-      },
-      songGenre: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

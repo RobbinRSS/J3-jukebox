@@ -61,7 +61,7 @@ function PlaylistPage() {
       );
     } else {
       setTotalDuration(
-        playlistSongs.reduce((acc, song) => acc + song.songDuration, 0)
+        playlistSongs.reduce((acc, song) => acc + song.song_duration, 0)
       );
     }
   }
@@ -97,7 +97,9 @@ function PlaylistPage() {
         .then((res) => {
           if (!res.ok) throw new Error("Failed to delete song from playlist");
           // Verwijder uit state zodat UI direct updatet
-          setPlaylistSongs((prev) => prev.filter((song) => song.songId !== id));
+          setPlaylistSongs((prev) =>
+            prev.filter((song) => song.song_id !== id)
+          );
           showSuccess("Song succesfully removed from playlist!");
         })
         .catch((err) => {
@@ -182,13 +184,13 @@ function PlaylistPage() {
         ) : playlistSongs.length > 0 ? (
           playlistSongs.map((song) => (
             <div key={song.id} id="song">
-              {song.songTitle}{" "}
+              {song.song_title}{" "}
               <span id="duration-song">
-                {formatDuration(song.songDuration)} min
+                {formatDuration(song.song_duration)} min
               </span>
               <button
                 id="remove-from-playlist"
-                onClick={() => removeFromPlaylist(song.songId)}
+                onClick={() => removeFromPlaylist(song.id)}
               >
                 <FontAwesomeIcon icon={faTrash} />
               </button>

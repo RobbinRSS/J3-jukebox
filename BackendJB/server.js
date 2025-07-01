@@ -169,27 +169,20 @@ app.post("/addsongtoplaylist", (req, res) => {
 
     // PAS HIER NAAR BINNEN verplaatsen
     const sql = `
-      INSERT INTO playlist_songs (playlistId, songId, songTitle, songDuration, songGenre, createdAt) 
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO playlist_songs (playlistId, songId, createdAt) 
+      VALUES (?, ?, ?)
     `;
 
     const createdAt = new Date();
     const songId = song.id;
-    const songName = song.song_title;
-    const songDuration = song.song_duration;
-    const songGenre = song.genre;
 
-    db.query(
-      sql,
-      [playlistId, songId, songName, songDuration, songGenre, createdAt],
-      (err, result) => {
-        if (err) {
-          console.error("Insert error:", err);
-          return res.status(500).json({ message: "Failed to add song" });
-        }
-        return res.status(201).json({ message: "Added song to playlist" });
+    db.query(sql, [playlistId, songId, createdAt], (err, result) => {
+      if (err) {
+        console.error("Insert error:", err);
+        return res.status(500).json({ message: "Failed to add song" });
       }
-    );
+      return res.status(201).json({ message: "Added song to playlist" });
+    });
   });
 });
 //
@@ -203,6 +196,7 @@ app.post("/getsongfromplaylist", (req, res) => {
     return res.status(401).json({ message: "Not authorized" });
   }
 
+  // Check of de playlist bij deze gebruiker hoort
   const checkOwnershipSql =
     "SELECT * FROM playlists WHERE id = ? AND userId = ?";
   db.query(checkOwnershipSql, [playlistId, userId], (err, ownershipResult) => {
@@ -211,10 +205,23 @@ app.post("/getsongfromplaylist", (req, res) => {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    const sql = "SELECT * FROM playlist_songs WHERE playlistId = ?";
-    db.query(sql, [playlistId], (err, result) => {
+    // Haal alle songIds op uit playlist_songs
+    const songIdQuery =
+      "SELECT songId FROM playlist_songs WHERE playlistId = ?";
+    db.query(songIdQuery, [playlistId], (err, result) => {
       if (err) return res.status(500).json({ message: "Error loading songs" });
-      return res.status(200).json(result);
+      if (result.length === 0) return res.status(200).json([]);
+
+      // Haal alle song-details op via een IN-clausule (geen join!)
+      const songIds = result.map((row) => row.songId);
+      const placeholders = songIds.map(() => "?").join(",");
+      const songsQuery = `SELECT * FROM songs WHERE id IN (${placeholders})`;
+
+      db.query(songsQuery, songIds, (err, songs) => {
+        if (err)
+          return res.status(500).json({ message: "Failed to get songs" });
+        return res.status(200).json(songs);
+      });
     });
   });
 });
